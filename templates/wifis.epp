@@ -1,0 +1,158 @@
+<%- | 
+  String                                                          $name,
+
+  # common properties for physical devices
+  Optional[Struct[{
+    Optional[name]       => String,
+    Optional[macaddress] => Stdlib::MAC,
+    Optional[driver]     => String,
+  }]]                                                             $match = undef,
+  Optional[String]                                                $set_name = undef,
+  Optional[Boolean]                                               $wakeonlan = undef,
+
+  # common properties
+  Optional[Enum['networkd', 'NetworkManager']]                    $renderer = undef,
+  Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp4 = undef,
+  Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp6 = undef,
+  Optional[Enum['mac']]                                           $dhcp_identifier = undef,
+  Optional[Boolean]                                               $accept_ra = undef,
+  Optional[Array[Stdlib::IP::Address]]                            $addresses = undef,
+  Optional[Stdlib::IP::Address::V4::Nosubnet]                     $gateway4 = undef,
+  Optional[Stdlib::IP::Address::V6::Nosubnet]                     $gateway6 = undef,
+  Optional[Struct[{
+    search => Array[Stdlib::Fqdn],
+    addresses => Array[Stdlib::IP::Address]
+  }]]                                                             $nameservers = undef,
+  Optional[Stdlib::MAC]                                           $macaddress = undef,
+  Optional[Boolean]                                               $optional = undef,
+  Optional[Array[Struct[{
+    Optional['from']          => Stdlib::IP::Address,
+    'to'                      => Stdlib::IP::Address,
+    'via'                     => Stdlib::IP::Address::Nosubnet,
+    Optional['on_link']       => Boolean,
+    Optional['metric']        => Integer,
+    Optional['type']          => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
+    Optional['scope']         => Enum['global', 'link', 'host'],
+    Optional['table']         => Integer,
+  }]]]                                                            $routes = undef,
+  Optional[Array[Struct[{
+    from                      => Stdlib::IP::Address,
+    to                        => Stdlib::IP::Address,
+    Optional[table]           => Integer,
+    Optional[priority]        => Integer,
+    Optional[fwmark]          => Integer,
+    Optional[type_of_service] => Integer,
+  }]]]                                                            $routing_policy = undef,
+
+  # wifis specific properties
+  Optional[Hash[String, Struct[{
+    Optional['password']        => String,
+    Optional['mode']            => Enum['infrastructure', 'ap', 'adhoc'],
+  }]]]                                                            $access_points = undef,
+
+| -%>
+    <%= $name %>:
+    <%# common properties for physical devices -%>
+    <%- if $match { -%>
+      match:
+      <%- if $match[name] { -%>
+        name: <%= $match[name] %>
+      <%- } -%>
+      <%- if $match[macaddress] { -%>
+        macaddress: <%= $match[macaddress] %>
+      <%- } -%>
+      <%- if $match[driver] { -%>
+        driver: <%= $match[driver] %>
+      <%- } -%>
+    <%- } -%>
+    <%- if $set_name { -%>
+      set-name: <%= $set_name %>
+    <%- } -%>
+    <%- unless $wakeonlan =~ Undef { -%>
+      wakeonlan: <%= $wakeonlan %>
+    <%- } -%>
+    <%# common properties -%>
+    <%- if $renderer { -%>
+      renderer: <%= $renderer %>
+    <%- } -%>
+    <%- unless $dhcp4 =~ Undef { -%>
+      dhcp4: <%= $dhcp4 %>
+    <%- } -%>
+    <%- unless $dhcp6 =~ Undef { -%>
+      dhcp6: <%= $dhcp6 %>
+    <%- } -%>
+    <%- if $dhcp_identifier { -%>
+      dhcp-identifier: <%= $dhcp_identifier %>
+    <%- } -%>
+    <%- unless $accept_ra =~ Undef { -%>
+      accept-ra: <%= $accept_ra %>
+    <%- } -%>
+    <%- if $addresses { -%>
+      addresses:
+      <%- $addresses.each |$address| { -%>
+        - <%= $address %>
+      <%- } -%>
+    <%- } -%>
+    <%- if $gateway4 { -%>
+      gateway4: <%= $gateway4 %>
+    <%- } -%>
+    <%- if $gateway6 { -%>
+      gateway6: <%= $gateway6 %>
+    <%- } -%>
+    <%- if $nameservers { -%>
+      nameservers:
+      <%- if $nameservers[search] { -%>
+        search: <%= $nameservers[search] %>
+      <%- } -%>
+      <%- if $nameservers[addresses] { -%>
+        addresses: <%= $nameservers[addresses] %>
+      <%- } -%>
+    <%- } -%>
+    <%- if $macaddress { -%>
+      macaddress: <%= $macaddress %>
+    <%- } -%>
+    <%- if $optional { -%>
+      optional: <%= $optional %>
+    <%- } -%>
+    <%- if $routes { -%>
+      routes:
+      <%- $routes.each |$route| { -%>
+        - to: <%= $route[to] %>
+          via: <%= $route[via] %>
+          <%- if $route[table] { -%>
+          table: <%= $route[table] %>
+          <%- } -%>
+          <%- unless $route[on_link] =~ Undef { -%>
+          on-link: <%= $route[on_link] %>
+          <%- } -%>
+          <%- if $route[metric] { -%>
+          metric: <%= $route[metric] %>
+          <%- } -%>
+      <%- } -%>
+    <%- } -%>
+    <%- if $routing_policy { -%>
+      routing-policy:
+      <%- $routing_policy.each |$policy| { -%>
+        - to: <%= $policy[to] %>
+          from: <%= $policy[from] %>
+          <%- if $policy[table] { -%>
+          table: <%= $policy[table] %>
+          <%- } -%>
+          <%- if $policy[priority] { -%>
+          priority: <%= $policy[priority] %>
+          <%- } -%>
+      <%- } -%>
+    <%- } -%>
+    <%# wifis specific properties -%>
+    <%- if $access_points { -%>
+      access-points:
+      <%- $access_points.each |$ssid,$setting| { -%>
+        "<%= $ssid %>":
+          <%- if $setting[password] { -%>
+          password: <%= $setting[password] %>
+          <%- } -%>
+          <%- if $setting[mode] { -%>
+          mode: <%= $setting[mode] %>
+          <%- } -%>
+      <%- } -%>
+    <%- } -%>

@@ -1,0 +1,203 @@
+<%- | 
+  String                                                          $name,
+
+  # common properties
+  Optional[Enum['networkd', 'NetworkManager']]                    $renderer = undef,
+  Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp4 = undef,
+  Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp6 = undef,
+  Optional[Enum['mac']]                                           $dhcp_identifier = undef,
+  Optional[Boolean]                                               $accept_ra = undef,
+  Optional[Array[Stdlib::IP::Address]]                            $addresses = undef,
+  Optional[Stdlib::IP::Address::V4::Nosubnet]                     $gateway4 = undef,
+  Optional[Stdlib::IP::Address::V6::Nosubnet]                     $gateway6 = undef,
+  Optional[Struct[{
+    search => Array[Stdlib::Fqdn],
+    addresses => Array[Stdlib::IP::Address]
+  }]]                                                             $nameservers = undef,
+  Optional[Stdlib::MAC]                                           $macaddress = undef,
+  Optional[Boolean]                                               $optional = undef,
+  Optional[Array[Struct[{
+    Optional['from']          => Stdlib::IP::Address,
+    'to'                      => Stdlib::IP::Address,
+    'via'                     => Stdlib::IP::Address::Nosubnet,
+    Optional['on_link']       => Boolean,
+    Optional['metric']        => Integer,
+    Optional['type']          => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
+    Optional['scope']         => Enum['global', 'link', 'host'],
+    Optional['table']         => Integer,
+  }]]]                                                            $routes = undef,
+  Optional[Array[Struct[{
+    from                      => Stdlib::IP::Address,
+    to                        => Stdlib::IP::Address,
+    Optional[table]           => Integer,
+    Optional[priority]        => Integer,
+    Optional[fwmark]          => Integer,
+    Optional[type_of_service] => Integer,
+  }]]]                                                            $routing_policy = undef,
+
+  # bonds specific properties
+  Array[String]                                                   $interfaces = undef,
+  Optional[Struct[{
+    Optional['mode']                    => Enum['balance-rr', 'active-backup', 'balance-xor', 'broadcast', '802.3ad', 'balance-tlb', 'balance-alb'],
+    Optional['lacp_rate']               => Enum['slow', 'fast'],
+    Optional['mii_monitor_interval']    => Integer,
+    Optional['min_links']               => Integer,
+    Optional['transmit_hash_policy']    => Enum['layer2', 'layer3+4', 'layer2+3', 'encap2+3', 'encap3+4'],
+    Optional['ad_select']               => Enum['stable', 'bandwidth', 'count'],
+    Optional['all_slaves_active']       => Boolean,
+    Optional['arp_interval']            => Integer,
+    Optional['arp_ip_targets']          => Array[Stdlib::IP::Address::V4::Nosubnet],
+    Optional['arp_validate']            => Enum['none', 'active', 'backup', 'all'],
+    Optional['arp_all_targets']         => Enum['any', 'all'],
+    Optional['up_delay']                => Integer,
+    Optional['down_delay']              => Integer,
+    Optional['fail_over_mac_policy']    => Enum['none', 'active', 'follow'],
+    Optional['gratuitious_arp']         => Integer,
+    Optional['packets_per_slave']       => Integer,
+    Optional['primary_reselect_policy'] => Enum['always', 'better', 'failure'],
+    Optional['resend_igmp']             => Integer,
+    Optional['learn_packet_interval']   => String,
+    Optional['primary']                 => String,
+  }]]                                                             $parameters = undef,
+
+| -%>
+    <%= $name %>:
+    <%# common properties -%>
+    <%- if $renderer { -%>
+      renderer: <%= $renderer %>
+    <%- } -%>
+    <%- unless $dhcp4 =~ Undef { -%>
+      dhcp4: <%= $dhcp4 %>
+    <%- } -%>
+    <%- unless $dhcp6 =~ Undef { -%>
+      dhcp6: <%= $dhcp6 %>
+    <%- } -%>
+    <%- if $dhcp_identifier { -%>
+      dhcp-identifier: <%= $dhcp_identifier %>
+    <%- } -%>
+    <%- unless $accept_ra =~ Undef { -%>
+      accept-ra: <%= $accept_ra %>
+    <%- } -%>
+    <%- if $addresses { -%>
+      addresses: 
+      <%- $addresses.each |$address| { -%>
+        - <%= $address %>
+      <%- } -%>
+    <%- } -%>
+    <%- if $gateway4 { -%>
+      gateway4: <%= $gateway4 %>
+    <%- } -%>
+    <%- if $gateway6 { -%>
+      gateway6: <%= $gateway6 %>
+    <%- } -%>
+    <%- if $nameservers { -%>
+      nameservers:
+      <%- if $nameservers[search] { -%>
+        search: <%= $nameservers[search] %>
+      <%- } -%>
+      <%- if $nameservers[addresses] { -%>
+        addresses: <%= $nameservers[addresses] %>
+      <%- } -%>
+    <%- } -%>
+    <%- if $macaddress { -%>
+      macaddress: <%= $macaddress %>
+    <%- } -%>
+    <%- if $optional { -%>
+      optional: <%= $optional %>
+    <%- } -%>
+    <%- if $routes { -%>
+      routes:
+      <%- $routes.each |$route| { -%>
+        - to: <%= $route[to] %>
+          via: <%= $route[via] %>
+          <%- if $route[table] { -%>
+          table: <%= $route[table] %>
+          <%- } -%>
+          <%- unless $route[on_link] =~ Undef { -%>
+          on-link: <%= $route[on_link] %>
+          <%- } -%>
+          <%- if $route[metric] { -%>
+          metric: <%= $route[metric] %>
+          <%- } -%>
+      <%- } -%>
+    <%- } -%>
+    <%- if $routing_policy { -%>
+      routing-policy:
+      <%- $routing_policy.each |$policy| { -%>
+        - to: <%= $policy[to] %>
+          from: <%= $policy[from] %>
+          <%- if $policy[table] { -%>
+          table: <%= $policy[table] %>
+          <%- } -%>
+          <%- if $policy[priority] { -%>
+          priority: <%= $policy[priority] %>
+          <%- } -%>
+      <%- } -%>
+    <%- } -%>
+    <%# bonds specific properties -%>
+    <%- if $interfaces { -%>
+      interfaces: <%= $interfaces %>
+    <%- } -%>
+    <%- if $parameters { -%>
+      parameters:
+        <%- if $parameters[mode] { -%>
+        mode: <%= $parameters[mode] %>
+        <%- } -%>
+        <%- if $parameters[lacp_rate] { -%>
+        lacp-rate: <%= $parameters[lacp_rate] %>
+        <%- } -%>
+        <%- if $parameters[mii_monitor_interval] { -%>
+        mii-monitor-interval: <%= $parameters[mii_monitor_interval] %>
+        <%- } -%>
+        <%- if $parameters[min_links] { -%>
+        min-links: <%= $parameters[min_links] %>
+        <%- } -%>
+        <%- if $parameters[transmit_hash_policy] { -%>
+        transmit-hash-policy: <%= $parameters[transmit_hash_policy] %>
+        <%- } -%>
+        <%- if $parameters[ad_select] { -%>
+        ad-select: <%= $parameters[ad_select] %>
+        <%- } -%>
+        <%- unless $parameters[all_slaves_active] =~ Undef { -%>
+        all-slaves-active: <%= $parameters[all_slaves_active] %>
+        <%- } -%>
+        <%- if $parameters[arp_interval] { -%>
+        arp-interval: <%= $parameters[arp_interval] %>
+        <%- } -%>
+        <%- if $parameters[arp_ip_targets] { -%>
+        arp-ip-targets: <%= $parameters[arp_ip_targets] %>
+        <%- } -%>
+        <%- if $parameters[arp_validate] { -%>
+        arp-validate: <%= $parameters[arp_validate] %>
+        <%- } -%>
+        <%- if $parameters[arp_all_targets] { -%>
+        arp-all-targets: <%= $parameters[arp_all_targets] %>
+        <%- } -%>
+        <%- if $parameters[up_delay] { -%>
+        up-delay: <%= $parameters[up_delay] %>
+        <%- } -%>
+        <%- if $parameters[down_delay] { -%>
+        down-delay: <%= $parameters[down_delay] %>
+        <%- } -%>
+        <%- if $parameters[fail_over_mac_policy] { -%>
+        fail-over-mac-policy: <%= $parameters[fail_over_mac_policy] %>
+        <%- } -%>
+        <%- if $parameters[gratuitious_arp] { -%>
+        gratuitious-arp: <%= $parameters[gratuitious_arp] %>
+        <%- } -%>
+        <%- if $parameters[packets_per_slave] { -%>
+        packets-per-slave: <%= $parameters[packets_per_slave] %>
+        <%- } -%>
+        <%- if $parameters[primary_reselect_policy] { -%>
+        primary-reselect-policy: <%= $parameters[primary_reselect_policy] %>
+        <%- } -%>
+        <%- if $parameters[resend_igmp] { -%>
+        resend-igmp: <%= $parameters[resend_igmp] %>
+        <%- } -%>
+        <%- if $parameters[learn_packet_interval] { -%>
+        learn-packet-interval: <%= $parameters[learn_packet_interval] %>
+        <%- } -%>
+        <%- if $parameters[primary] { -%>
+        primary: <%= $parameters[primary] %>
+        <%- } -%>
+    <%- } -%>
