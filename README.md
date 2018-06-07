@@ -10,7 +10,7 @@
 
 ## Description
 
-The netplan module manages and applys netplan configuration.
+The netplan module manages and applies netplan configuration.
 
 ## Requirements
 

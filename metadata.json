@@ -2,7 +2,7 @@
   "name": "puppet-netplan",
   "version": "0.1.0",
   "author": "zehweh",
-  "summary": "Manages and applys netplan configuration",
+  "summary": "Manages and applies netplan configuration",
   "license": "Apache-2.0",
   "source": "https://github.com/zehweh/puppet-netplan",
   "project_page": "https://github.com/zehweh/puppet-netplan",

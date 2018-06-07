@@ -154,7 +154,8 @@ define netplan::bonds (
   # bonds specific properties
   Array[String]                                                   $interfaces = undef,
   Optional[Struct[{
-    Optional['mode']                    => Enum['balance-rr', 'active-backup', 'balance-xor', 'broadcast', '802.3ad', 'balance-tlb', 'balance-alb'],
+    Optional['mode']                    => Enum['balance-rr', 'active-backup', 'balance-xor',
+                                                'broadcast', '802.3ad', 'balance-tlb', 'balance-alb'],
     Optional['lacp_rate']               => Enum['slow', 'fast'],
     Optional['mii_monitor_interval']    => Integer,
     Optional['min_links']               => Integer,
@@ -195,13 +196,13 @@ define netplan::bonds (
   }
 
   $bondstmp = epp("${module_name}/bonds.epp", {
-    'name'            => $name, 
-    'renderer'        => $renderer, 
-    'dhcp4'           => $_dhcp4, 
-    'dhcp6'           => $_dhcp6, 
-    'dhcp_identifier' => $dhcp_identifier, 
-    'accept_ra'       => $accept_ra, 
-    'addresses'       => $addresses, 
+    'name'            => $name,
+    'renderer'        => $renderer,
+    'dhcp4'           => $_dhcp4,
+    'dhcp6'           => $_dhcp6,
+    'dhcp_identifier' => $dhcp_identifier,
+    'accept_ra'       => $accept_ra,
+    'addresses'       => $addresses,
     'gateway4'        => $gateway4,
     'gateway6'        => $gateway6,
     'nameservers'     => $nameservers,
@@ -209,8 +210,8 @@ define netplan::bonds (
     'optional'        => $optional,
     'routes'          => $routes,
     'routing_policy'  => $routing_policy,
-    'interfaces'      => $interfaces, 
-    'parameters'      => $parameters, 
+    'interfaces'      => $interfaces,
+    'parameters'      => $parameters,
   })
 
   concat::fragment { $name:

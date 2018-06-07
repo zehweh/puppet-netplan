@@ -156,16 +156,16 @@ define netplan::wifis (
   }
 
   $wifistmp = epp("${module_name}/wifis.epp", {
-    'name'            => $name, 
-    'match'           => $match, 
-    'set_name'        => $set_name, 
-    'wakeonlan'       => $wakeonlan, 
-    'renderer'        => $renderer, 
-    'dhcp4'           => $_dhcp4, 
-    'dhcp6'           => $_dhcp6, 
-    'dhcp_identifier' => $dhcp_identifier, 
-    'accept_ra'       => $accept_ra, 
-    'addresses'       => $addresses, 
+    'name'            => $name,
+    'match'           => $match,
+    'set_name'        => $set_name,
+    'wakeonlan'       => $wakeonlan,
+    'renderer'        => $renderer,
+    'dhcp4'           => $_dhcp4,
+    'dhcp6'           => $_dhcp6,
+    'dhcp_identifier' => $dhcp_identifier,
+    'accept_ra'       => $accept_ra,
+    'addresses'       => $addresses,
     'gateway4'        => $gateway4,
     'gateway6'        => $gateway6,
     'nameservers'     => $nameservers,
@@ -173,7 +173,7 @@ define netplan::wifis (
     'optional'        => $optional,
     'routes'          => $routes,
     'routing_policy'  => $routing_policy,
-    'access_points'   => $access_points, 
+    'access_points'   => $access_points,
   })
 
   concat::fragment { $name:

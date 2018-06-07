@@ -150,13 +150,13 @@ define netplan::bridges (
   }
 
   $bridgestmp = epp("${module_name}/bridges.epp", {
-    'name'            => $name, 
-    'renderer'        => $renderer, 
-    'dhcp4'           => $_dhcp4, 
-    'dhcp6'           => $_dhcp6, 
-    'dhcp_identifier' => $dhcp_identifier, 
-    'accept_ra'       => $accept_ra, 
-    'addresses'       => $addresses, 
+    'name'            => $name,
+    'renderer'        => $renderer,
+    'dhcp4'           => $_dhcp4,
+    'dhcp6'           => $_dhcp6,
+    'dhcp_identifier' => $dhcp_identifier,
+    'accept_ra'       => $accept_ra,
+    'addresses'       => $addresses,
     'gateway4'        => $gateway4,
     'gateway6'        => $gateway6,
     'nameservers'     => $nameservers,
@@ -164,8 +164,8 @@ define netplan::bridges (
     'optional'        => $optional,
     'routes'          => $routes,
     'routing_policy'  => $routing_policy,
-    'interfaces'      => $interfaces, 
-    'parameters'      => $parameters, 
+    'interfaces'      => $interfaces,
+    'parameters'      => $parameters,
   })
 
   concat::fragment { $name:
