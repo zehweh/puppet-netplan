@@ -1,14 +1,21 @@
 {
   "name": "puppet-netplan",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "zehweh",
   "summary": "Manages and applies netplan configuration",
   "license": "Apache-2.0",
   "source": "https://github.com/zehweh/puppet-netplan",
   "project_page": "https://github.com/zehweh/puppet-netplan",
+  "issues_url": "https://github.com/zehweh/puppet-netplan/issues",
   "dependencies": [
-    { "name":"puppetlabs/stdlib","version_requirement":">= 4.25.1 < 5.0.0" },
-    { "name":"puppetlabs/concat","version_requirement":">= 1.2.5 < 5.0.0" }
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.25.1 < 5.0.0"
+    },
+    {
+      "name": "puppetlabs/concat",
+      "version_requirement": ">= 1.2.5 < 5.0.0"
+    }
   ],
   "data_provider": "hiera",
   "operatingsystem_support": [
@@ -25,5 +32,8 @@
       "version_requirement": ">= 4.5.0 < 5.0.0"
     }
   ],
-  "description": "Netplan Module for Ubuntu 18.04."
+  "description": "Netplan Module for Ubuntu 18.04.",
+  "pdk-version": "1.5.0",
+  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
+  "template-ref": "1.5.0-0-gd1b3eca"
 }

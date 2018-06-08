@@ -90,8 +90,10 @@ define netplan::ethernets (
 
   # common properties
   Optional[Enum['networkd', 'NetworkManager']]                    $renderer = undef,
+  #lint:ignore:quoted_booleans
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp4 = undef,
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp6 = undef,
+  #lint:endignore
   Optional[Enum['mac']]                                           $dhcp_identifier = undef,
   Optional[Boolean]                                               $accept_ra = undef,
   Optional[Array[Stdlib::IP::Address]]                            $addresses = undef,
