@@ -32,17 +32,14 @@ class netplan (
   Integer              $version = 2,
   Boolean              $netplan_apply = true,
 
-  ){
+)
+{
+
+  include netplan::apply
 
   $notify = $netplan_apply ? {
-    true    => Exec['netplan_apply'],
+    true    => Class['netplan::apply'],
     default => undef,
-  }
-
-  exec { 'netplan_apply':
-    command     => 'netplan apply',
-    logoutput   => 'on_failure',
-    refreshonly => true,
   }
 
   concat { $netplan::config_file:
