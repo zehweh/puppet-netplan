@@ -1,5 +1,10 @@
 # Changelog
 
+## Release 0.1.3
+
+#### Fixed
+- allow floats for mii_monitor_interval, up_delay, down_delay
+
 ## Release 0.1.2
 
 #### Fixed
