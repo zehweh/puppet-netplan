@@ -40,7 +40,7 @@ class netplan (
   }
 
   exec { 'netplan_apply':
-    command     => 'netplan apply',
+    command     => '/usr/sbin/netplan apply',
     logoutput   => 'on_failure',
     refreshonly => true,
   }

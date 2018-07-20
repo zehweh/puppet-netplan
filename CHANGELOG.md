@@ -1,5 +1,10 @@
 # Changelog
 
+## Release 0.1.4
+
+#### Fixed
+- add absolute path to netplan binary ([Issue #4](https://github.com/zehweh/puppet-netplan/issues/4))
+
 ## Release 0.1.3
 
 #### Fixed
