@@ -1,5 +1,10 @@
 # Changelog
 
+## Release 0.1.5
+
+#### Fixed
+- puppetlabs-stdlib Stdlib::IP::Address::V4 doesn't match '0.0.0.0/0' ([Issue #5](https://github.com/zehweh/puppet-netplan/issues/5))
+
 ## Release 0.1.4
 
 #### Fixed
