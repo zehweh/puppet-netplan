@@ -94,7 +94,10 @@
         search: <%= $nameservers[search] %>
       <%- } -%>
       <%- if $nameservers[addresses] { -%>
-        addresses: <%= $nameservers[addresses] %>
+        addresses:
+      <%- $nameservers[addresses].each |$address| { -%>
+          - <%= $address %>
+      <%- } -%>
       <%- } -%>
     <%- } -%>
     <%- if $macaddress { -%>
