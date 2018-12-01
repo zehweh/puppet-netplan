@@ -1,5 +1,10 @@
 # Changelog
 
+## Release 0.1.6
+
+#### Fixed
+- merged 'Expand $nameservers[addresses] to multi lines' ([PR #6](https://github.com/zehweh/puppet-netplan/pull/6))
+
 ## Release 0.1.5
 
 #### Fixed
