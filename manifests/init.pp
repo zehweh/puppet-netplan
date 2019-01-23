@@ -55,7 +55,7 @@ class netplan (
     'renderer'  => $renderer,
   })
 
-  concat::fragment { 'header':
+  concat::fragment { 'netplan_header':
     target  => $netplan::config_file,
     content => $headertmp,
     order   => '01',
