@@ -1,5 +1,13 @@
 # Changelog
 
+## Release 0.1.7
+
+#### Added
+- updated dependencies
+
+#### Fixed
+- merged 'fix_logwatch_module_conflict' ([PR #7](https://github.com/zehweh/puppet-netplan/pull/7))
+
 ## Release 0.1.6
 
 #### Fixed
