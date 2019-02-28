@@ -103,7 +103,7 @@ define netplan::bridges (
   Optional[Boolean]                                               $optional = undef,
   Optional[Array[Struct[{
     Optional['from']            => Stdlib::IP::Address,
-    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0']],
+    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
     'via'                       => Stdlib::IP::Address::Nosubnet,
     Optional['on_link']         => Boolean,
     Optional['metric']          => Integer,
@@ -113,7 +113,7 @@ define netplan::bridges (
   }]]]                                                            $routes = undef,
   Optional[Array[Struct[{
     'from'                      => Stdlib::IP::Address,
-    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0']],
+    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
     Optional['table']           => Integer,
     Optional['priority']        => Integer,
     Optional['fwmark']          => Integer,
