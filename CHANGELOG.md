@@ -1,5 +1,11 @@
 # Changelog
 
+## Release 0.1.8
+
+#### Added
+- merged 'add MTU support' ([PR #9](https://github.com/zehweh/puppet-netplan/pull/9))
+- merged 'Add support for IPv6 default routes' ([PR #8](https://github.com/zehweh/puppet-netplan/pull/8))
+
 ## Release 0.1.7
 
 #### Added
