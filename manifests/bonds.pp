@@ -126,6 +126,7 @@ define netplan::bonds (
   Optional[Enum['mac']]                                           $dhcp_identifier = undef,
   Optional[Boolean]                                               $accept_ra = undef,
   Optional[Array[Stdlib::IP::Address]]                            $addresses = undef,
+  Optional[Integer]                                               $mtu = undef,
   Optional[Stdlib::IP::Address::V4::Nosubnet]                     $gateway4 = undef,
   Optional[Stdlib::IP::Address::V6::Nosubnet]                     $gateway6 = undef,
   Optional[Struct[{
@@ -205,6 +206,7 @@ define netplan::bonds (
     'dhcp_identifier' => $dhcp_identifier,
     'accept_ra'       => $accept_ra,
     'addresses'       => $addresses,
+    'mtu'             => $mtu,
     'gateway4'        => $gateway4,
     'gateway6'        => $gateway6,
     'nameservers'     => $nameservers,
