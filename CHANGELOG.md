@@ -1,5 +1,10 @@
 # Changelog
 
+## Release 0.1.9
+
+#### Added
+- merged 'Support puppet 6' ([PR #12](https://github.com/zehweh/puppet-netplan/pull/12))
+
 ## Release 0.1.8
 
 #### Added
