@@ -20,6 +20,8 @@
 #  netplan config file version
 # @param netplan_apply
 #  whether or not to apply the changes
+# @param purge_config
+#  whether or not to purge the netplan directory
 #
 class netplan (
   Optional[Hash]       $ethernets = undef,
@@ -31,8 +33,20 @@ class netplan (
   String               $renderer = 'networkd',
   Integer              $version = 2,
   Boolean              $netplan_apply = true,
-
+  Boolean              $purge_config = true,
   ){
+
+  file { '/etc/netplan':
+    ensure => directory,
+  }
+
+  if $purge_config {
+    File['/etc/netplan'] {
+      purge   => true,
+      recurse => true,
+      force   => true,
+    }
+  }
 
   $notify = $netplan_apply ? {
     true    => Exec['netplan_apply'],

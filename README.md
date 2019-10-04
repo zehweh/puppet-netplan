@@ -32,6 +32,7 @@ Hiera yaml:
 ```
 netplan::version: 2
 netplan::renderer: networkd
+netplan::purge_config: true
 netplan::ethernets:
     eno1:
       dhcp4: yes
@@ -67,7 +68,7 @@ netplan::ethernets:
 ```
 
 
- 
+
 
 
 
