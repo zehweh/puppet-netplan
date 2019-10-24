@@ -60,6 +60,7 @@
     Optional['learn_packet_interval']   => String,
     Optional['primary']                 => String,
   }]]                                                             $parameters = undef,
+  Optional[Boolean]                                               $critical = undef,
 
 | -%>
     <%= $name %>:
@@ -207,4 +208,7 @@
         <%- if $parameters[primary] { -%>
         primary: <%= $parameters[primary] %>
         <%- } -%>
+    <%- } -%>
+    <%- unless $critical =~ Undef { -%>
+      critical: <%= $critical %>
     <%- } -%>

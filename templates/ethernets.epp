@@ -44,6 +44,7 @@
     Optional[fwmark]          => Integer,
     Optional[type_of_service] => Integer,
   }]]]                                                            $routing_policy = undef,
+  Optional[Boolean]                                               $critical = undef,
 
 | -%>
     <%= $name %>:
@@ -143,4 +144,7 @@
           priority: <%= $policy[priority] %>
           <%- } -%>
       <%- } -%>
+    <%- } -%>
+    <%- unless $critical =~ Undef { -%>
+      critical: <%= $critical %>
     <%- } -%>

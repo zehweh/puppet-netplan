@@ -179,6 +179,7 @@ define netplan::bonds (
     Optional['learn_packet_interval']   => String,
     Optional['primary']                 => String,
   }]]                                                             $parameters = undef,
+  Optional[Boolean]                                               $critical = undef,
 
   ){
 
@@ -216,6 +217,7 @@ define netplan::bonds (
     'routing_policy'  => $routing_policy,
     'interfaces'      => $interfaces,
     'parameters'      => $parameters,
+    'critical'        => $critical,
   })
 
   concat::fragment { $name:

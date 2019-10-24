@@ -124,6 +124,7 @@ define netplan::ethernets (
     Optional['fwmark']          => Integer,
     Optional['type_of_service'] => Integer,
   }]]]                                                            $routing_policy = undef,
+  Optional[Boolean]                                               $critical = undef,
 
   ){
 
@@ -162,6 +163,7 @@ define netplan::ethernets (
     'optional'        => $optional,
     'routes'          => $routes,
     'routing_policy'  => $routing_policy,
+    'critical'        => $critical,
   })
 
   concat::fragment { $name:

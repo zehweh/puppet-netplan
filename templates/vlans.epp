@@ -34,6 +34,7 @@
     Optional['fwmark']          => Integer,
     Optional['type_of_service'] => Integer,
   }]]]                                                            $routing_policy = undef,
+  Optional[Boolean]                                               $critical = undef,
 
   # vlans specific properties
   Integer                                                         $id = undef,
@@ -141,4 +142,7 @@
     <%- } -%>
     <%- if $link { -%>
       link: <%= $link %>
+    <%- } -%>
+    <%- unless $critical =~ Undef { -%>
+      critical: <%= $critical %>
     <%- } -%>

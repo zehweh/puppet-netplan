@@ -49,6 +49,7 @@
     Optional['password']        => String,
     Optional['mode']            => Enum['infrastructure', 'ap', 'adhoc'],
   }]]]                                                            $access_points = undef,
+  Optional[Boolean]                                               $critical = undef,
 
 | -%>
     <%= $name %>:
@@ -158,4 +159,7 @@
           mode: <%= $setting[mode] %>
           <%- } -%>
       <%- } -%>
+    <%- } -%>
+    <%- unless $critical =~ Undef { -%>
+      critical: <%= $critical %>
     <%- } -%>
