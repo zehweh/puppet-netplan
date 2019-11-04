@@ -122,6 +122,7 @@ define netplan::vlans (
   # vlans specific properties
   Integer                                                         $id = undef,
   String                                                          $link = undef,
+  Optional[Boolean]                                               $critical = undef,
 
   ) {
 
@@ -158,6 +159,7 @@ define netplan::vlans (
     'routing_policy'  => $routing_policy,
     'id'              => $id,
     'link'            => $link,
+    'critical'        => $critical,
   })
 
   concat::fragment { $name:

@@ -132,6 +132,7 @@ define netplan::bridges (
     Optional['path_cost']        => Integer,
     Optional['stp']              => Boolean,
   }]]                                                             $parameters = undef,
+  Optional[Boolean]                                               $critical = undef,
 
   ){
 
@@ -168,6 +169,7 @@ define netplan::bridges (
     'routing_policy'  => $routing_policy,
     'interfaces'      => $interfaces,
     'parameters'      => $parameters,
+    'critical'        => $critical,
   })
 
   concat::fragment { $name:

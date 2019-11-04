@@ -47,6 +47,7 @@
     Optional['path_cost']        => Integer,
     Optional['stp']              => Boolean,
   }]]                                                             $parameters = undef,
+  Optional[Boolean]                                               $critical = undef,
 
 | -%>
     <%= $name %>:
@@ -155,4 +156,7 @@
         <%- unless $parameters[stp] =~ Undef { -%>
         stp: <%= $parameters[stp] %>
         <%- } -%>
+    <%- } -%>
+    <%- unless $critical =~ Undef { -%>
+      critical: <%= $critical %>
     <%- } -%>

@@ -138,6 +138,7 @@ define netplan::wifis (
     Optional['password']        => String,
     Optional['mode']            => Enum['infrastructure', 'ap', 'adhoc'],
   }]]]                                                            $access_points = undef,
+  Optional[Boolean]                                               $critical = undef,
 
   ){
 
@@ -176,6 +177,7 @@ define netplan::wifis (
     'routes'          => $routes,
     'routing_policy'  => $routing_policy,
     'access_points'   => $access_points,
+    'critical'        => $critical,
   })
 
   concat::fragment { $name:
