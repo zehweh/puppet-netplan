@@ -1,5 +1,11 @@
 # Changelog
 
+## Release 0.1.10
+
+#### Added
+- merged 'Purges undeclared configuration file in /etc/netplan directory' ([PR #13](https://github.com/zehweh/puppet-netplan/pull/13))
+- merged 'Add support for `critical` netplan option' ([PR #14](https://github.com/zehweh/puppet-netplan/pull/14))
+
 ## Release 0.1.9
 
 #### Added
