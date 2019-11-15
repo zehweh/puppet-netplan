@@ -1,6 +1,6 @@
 {
   "name": "zehweh-netplan",
-  "version": "0.1.10",
+  "version": "1.0.0",
   "author": "zehweh",
   "summary": "Manages and applies netplan configuration",
   "license": "Apache-2.0",
@@ -21,7 +21,10 @@
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "18.04"
+        "18.04",
+        "18.10",
+        "19.04",
+        "19.10"
       ]
     }
   ],
@@ -31,8 +34,8 @@
       "version_requirement": ">= 4.5.0"
     }
   ],
-  "description": "Netplan Module for Ubuntu 18.04.",
-  "pdk-version": "1.5.0",
-  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
-  "template-ref": "1.5.0-0-gd1b3eca"
+  "description": "Netplan Module for Ubuntu > 18.04.",
+  "pdk-version": "1.14.1",
+  "template-url": "pdk-default#1.14.1",
+  "template-ref": "1.14.1-0-g0b5b39b"
 }

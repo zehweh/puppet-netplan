@@ -1,5 +1,15 @@
 # Changelog
 
+## Release 1.0.0
+
+#### Added
+- support for device type `tunnels`
+- support for authentication (wifi & ethernet)
+- support for ipv6-privacy, link-local, dhcp4-overrides, dhcp6-overrides, optional-addresses
+
+#### Fixed
+- changed `fwmark` to `mark` in the `routing-policy` setting
+
 ## Release 0.1.10
 
 #### Added

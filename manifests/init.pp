@@ -29,6 +29,7 @@ class netplan (
   Optional[Hash]       $wifis = undef,
   Optional[Hash]       $bridges = undef,
   Optional[Hash]       $bonds = undef,
+  Optional[Hash]       $tunnels = undef,
   Stdlib::Absolutepath $config_file = '/etc/netplan/01-netcfg.yaml',
   String               $renderer = 'networkd',
   Integer              $version = 2,
@@ -118,5 +119,14 @@ class netplan (
       order   => '50',
     }
     create_resources(netplan::bonds, $bonds)
+  }
+
+  if $tunnels {
+    concat::fragment { 'tunnels_header':
+      target  => $netplan::config_file,
+      content => "  tunnels:\n",
+      order   => '60',
+    }
+    create_resources(netplan::tunnels, $tunnels)
   }
 }

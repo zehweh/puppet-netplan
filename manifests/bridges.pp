@@ -4,7 +4,6 @@
 #
 # @note intended to be used only by netplan class
 #
-#  Enable wake on LAN. Off by default.
 # @param renderer
 #  Use the given networking backend for this definition. Currently supported are networkd and NetworkManager.
 #  This property can be specified globally in networks:, for a device type (in e. g. ethernets:) or for a
@@ -13,10 +12,21 @@
 #  Enable DHCP for IPv4. Off by default.
 # @param dhcp6
 #  Enable DHCP for IPv6. Off by default.
+# @param ipv6_privacy
+#  Enable IPv6 Privacy Extensions. Off by default.
+# @param link_local
+#  Configure the link-local addresses to bring up. Valid options are ‘ipv4’ and ‘ipv6’.
+# @param critical
+#  (networkd backend only) Designate the connection as "critical to the system", meaning that special
+#  care will be taken by systemd-networkd to not release the IP from DHCP when the daemon is restarted.
 # @param dhcp_identifier
 #  When set to ‘mac’; pass that setting over to systemd-networkd to use the device’s MAC address as a
 #  unique identifier rather than a RFC4361-compliant Client ID. This has no effect when NetworkManager
 #  is used as a renderer.
+# @param dhcp4_overrides
+#  (networkd backend only) Overrides default DHCP behavior
+# @param dhcp6_overrides
+#  (networkd backend only) Overrides default DHCP behavior
 # @param accept_ra
 #  Accept Router Advertisement that would have the kernel configure IPv6 by itself. On by default.
 # @param addresses
@@ -33,10 +43,14 @@
 #  search: is a list of search domains.
 # @param macaddress
 #  Set the device’s MAC address. The MAC address must be in the form "XX:XX:XX:XX:XX:XX".
+# @param mtu
+#  Set the Maximum Transmission Unit for the interface. The default is 1500. Valid values depend on your network interface.
 # @param optional
 #  An optional device is not required for booting. Normally, networkd will wait some time for device to
 #  become configured before proceeding with booting. However, if a device is marked as optional, networkd
 #  will not wait for it. This is only supported by networkd, and the default is false.
+# @param optional_addresses
+#  Specify types of addresses that are not required for a device to be considered online.
 # @param routes
 #  Configure static routing for the device.
 #  from: Set a source IP address for traffic going through the route.
@@ -56,9 +70,10 @@
 #  table: The table number to match for the route.
 #  priority: Specify a priority for the routing policy rule, to influence the order in which routing rules are
 #    processed. A higher number means lower priority: rules are processed in order by increasing priority number.
-#  fwmark: Have this routing policy rule match on traffic that has been marked by the iptables firewall with
+#  mark: Have this routing policy rule match on traffic that has been marked by the iptables firewall with
 #    this value. Allowed values are positive integers starting from 1.
 #  type_of_service: Match this policy rule based on the type of service number applied to the traffic.
+#
 # @param interfaces
 #  All devices matching this ID list will be added to the bridge.
 # @param parameters
@@ -90,17 +105,42 @@ define netplan::bridges (
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp4 = undef,
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp6 = undef,
   #lint:endignore
+  Optional[Boolean]                                               $ipv6_privacy = undef,
+  Optional[Tuple[Enum['ipv4', 'ipv6'], 0]]                        $link_local = undef,
+  Optional[Boolean]                                               $critical = undef,
   Optional[Enum['mac']]                                           $dhcp_identifier = undef,
+  Optional[Struct[{
+    Optional['use_dns']         => Boolean,
+    Optional['use_ntp']         => Boolean,
+    Optional['send_hostname']   => Boolean,
+    Optional['use_hostname']    => Boolean,
+    Optional['use_mtu']         => Boolean,
+    Optional['hostname']        => Stdlib::Fqdn,
+    Optional['use_routes']      => Boolean,
+    Optional['route_metric']    => Integer,
+  }]]                                                             $dhcp4_overrides = undef,
+  Optional[Struct[{
+    Optional['use_dns']         => Boolean,
+    Optional['use_ntp']         => Boolean,
+    Optional['send_hostname']   => Boolean,
+    Optional['use_hostname']    => Boolean,
+    Optional['use_mtu']         => Boolean,
+    Optional['hostname']        => Stdlib::Fqdn,
+    Optional['use_routes']      => Boolean,
+    Optional['route_metric']    => Integer,
+  }]]                                                             $dhcp6_overrides = undef,
   Optional[Boolean]                                               $accept_ra = undef,
   Optional[Array[Stdlib::IP::Address]]                            $addresses = undef,
   Optional[Stdlib::IP::Address::V4::Nosubnet]                     $gateway4 = undef,
   Optional[Stdlib::IP::Address::V6::Nosubnet]                     $gateway6 = undef,
   Optional[Struct[{
-    'search'                    => Array[Stdlib::Fqdn],
+    Optional['search']          => Array[Stdlib::Fqdn],    
     'addresses'                 => Array[Stdlib::IP::Address]
   }]]                                                             $nameservers = undef,
   Optional[Stdlib::MAC]                                           $macaddress = undef,
+  Optional[Integer]                                               $mtu = undef,
   Optional[Boolean]                                               $optional = undef,
+  Optional[Array[String]]                                         $optional_addresses = undef,
   Optional[Array[Struct[{
     Optional['from']            => Stdlib::IP::Address,
     'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
@@ -116,7 +156,7 @@ define netplan::bridges (
     'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
     Optional['table']           => Integer,
     Optional['priority']        => Integer,
-    Optional['fwmark']          => Integer,
+    Optional['mark']            => Integer,
     Optional['type_of_service'] => Integer,
   }]]]                                                            $routing_policy = undef,
 
@@ -132,7 +172,6 @@ define netplan::bridges (
     Optional['path_cost']        => Integer,
     Optional['stp']              => Boolean,
   }]]                                                             $parameters = undef,
-  Optional[Boolean]                                               $critical = undef,
 
   ){
 
@@ -153,23 +192,29 @@ define netplan::bridges (
   }
 
   $bridgestmp = epp("${module_name}/bridges.epp", {
-    'name'            => $name,
-    'renderer'        => $renderer,
-    'dhcp4'           => $_dhcp4,
-    'dhcp6'           => $_dhcp6,
-    'dhcp_identifier' => $dhcp_identifier,
-    'accept_ra'       => $accept_ra,
-    'addresses'       => $addresses,
-    'gateway4'        => $gateway4,
-    'gateway6'        => $gateway6,
-    'nameservers'     => $nameservers,
-    'macaddress'      => $macaddress,
-    'optional'        => $optional,
-    'routes'          => $routes,
-    'routing_policy'  => $routing_policy,
-    'interfaces'      => $interfaces,
-    'parameters'      => $parameters,
-    'critical'        => $critical,
+    'name'               => $name,
+    'renderer'           => $renderer,
+    'dhcp4'              => $_dhcp4,
+    'dhcp6'              => $_dhcp6,
+    'ipv6_privacy'       => $ipv6_privacy,
+    'link_local'         => $link_local,
+    'critical'           => $critical,
+    'dhcp_identifier'    => $dhcp_identifier,
+    'dhcp4_overrides'    => $dhcp4_overrides,
+    'dhcp6_overrides'    => $dhcp6_overrides,
+    'accept_ra'          => $accept_ra,
+    'addresses'          => $addresses,
+    'gateway4'           => $gateway4,
+    'gateway6'           => $gateway6,
+    'nameservers'        => $nameservers,
+    'macaddress'         => $macaddress,
+    'mtu'                => $mtu,
+    'optional'           => $optional,
+    'optional_addresses' => $optional_addresses,
+    'routes'             => $routes,
+    'routing_policy'     => $routing_policy,
+    'interfaces'         => $interfaces,
+    'parameters'         => $parameters,
   })
 
   concat::fragment { $name:

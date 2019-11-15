@@ -62,9 +62,16 @@
     Optional['type_of_service'] => Integer,
   }]]]                                                            $routing_policy = undef,
 
-  # vlans specific properties
-  Integer                                                         $id = undef,
-  String                                                          $link = undef,
+  # tunnels specific properties
+  Optional[Enum['sit', 'gre', 'ip6gre', 'ipip', 'ipip6', 'ip6ip6',
+                'vti', 'vti6', 'gretap', 'ip6gretap', 'isatap']]  $mode = undef,
+  Optional[Stdlib::IP::Address::Nosubnet]                         $local = undef,
+  Optional[Stdlib::IP::Address::Nosubnet]                         $remote = undef,
+  Optional[Integer]                                               $key = undef,
+  Optional[Struct[{
+    'input'                     => Integer,
+    'output'                    => Integer,
+  }]]                                                             $keys = undef,
 
 | -%>
     <%= $name %>:
@@ -148,7 +155,7 @@
       accept-ra: <%= $accept_ra %>
     <%- } -%>
     <%- if $addresses { -%>
-      addresses:
+      addresses: 
       <%- $addresses.each |$address| { -%>
         - <%= $address %>
       <%- } -%>
@@ -214,11 +221,22 @@
           priority: <%= $policy[priority] %>
           <%- } -%>
       <%- } -%>
-    <%- } -%>    
-    <%# properties for vlans -%>
-    <%- if $id { -%>
-      id: <%= $id %>
     <%- } -%>
-    <%- if $link { -%>
-      link: <%= $link %>
+    <%# tunnels specific properties -%>
+    <%- if $mode { -%>
+      mode: <%= $mode %>
+    <%- } -%>
+    <%- if $local { -%>
+      local: <%= $local %>
+    <%- } -%>
+    <%- if $remote { -%>
+      remote: <%= $remote %>
+    <%- } -%>
+    <%- if $key { -%>
+      key: <%= $key %>
+    <%- } -%>
+    <%- elsif $keys { -%>
+      keys:
+        input: <%= $keys[input] %>
+        output: <%= $keys[output] %>
     <%- } -%>

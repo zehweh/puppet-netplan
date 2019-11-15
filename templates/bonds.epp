@@ -3,43 +3,70 @@
 
   # common properties
   Optional[Enum['networkd', 'NetworkManager']]                    $renderer = undef,
+  #lint:ignore:quoted_booleans
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp4 = undef,
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp6 = undef,
+  #lint:endignore
+  Optional[Boolean]                                               $ipv6_privacy = undef,
+  Optional[Tuple[Enum['ipv4', 'ipv6'], 0]]                        $link_local = undef,
+  Optional[Boolean]                                               $critical = undef,
   Optional[Enum['mac']]                                           $dhcp_identifier = undef,
+  Optional[Struct[{
+    Optional['use_dns']         => Boolean,
+    Optional['use_ntp']         => Boolean,
+    Optional['send_hostname']   => Boolean,
+    Optional['use_hostname']    => Boolean,
+    Optional['use_mtu']         => Boolean,
+    Optional['hostname']        => Stdlib::Fqdn,
+    Optional['use_routes']      => Boolean,
+    Optional['route_metric']    => Integer,
+  }]]                                                             $dhcp4_overrides = undef,
+  Optional[Struct[{
+    Optional['use_dns']         => Boolean,
+    Optional['use_ntp']         => Boolean,
+    Optional['send_hostname']   => Boolean,
+    Optional['use_hostname']    => Boolean,
+    Optional['use_mtu']         => Boolean,
+    Optional['hostname']        => Stdlib::Fqdn,
+    Optional['use_routes']      => Boolean,
+    Optional['route_metric']    => Integer,
+  }]]                                                             $dhcp6_overrides = undef,
   Optional[Boolean]                                               $accept_ra = undef,
   Optional[Array[Stdlib::IP::Address]]                            $addresses = undef,
-  Optional[Integer]                                               $mtu = undef,
   Optional[Stdlib::IP::Address::V4::Nosubnet]                     $gateway4 = undef,
   Optional[Stdlib::IP::Address::V6::Nosubnet]                     $gateway6 = undef,
   Optional[Struct[{
-    search => Array[Stdlib::Fqdn],
-    addresses => Array[Stdlib::IP::Address]
+    Optional['search']          => Array[Stdlib::Fqdn],
+    'addresses'                 => Array[Stdlib::IP::Address]
   }]]                                                             $nameservers = undef,
   Optional[Stdlib::MAC]                                           $macaddress = undef,
+  Optional[Integer]                                               $mtu = undef,
   Optional[Boolean]                                               $optional = undef,
+  Optional[Array[String]]                                         $optional_addresses = undef,
   Optional[Array[Struct[{
-    Optional['from']          => Stdlib::IP::Address,
-    'to'                      => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
-    'via'                     => Stdlib::IP::Address::Nosubnet,
-    Optional['on_link']       => Boolean,
-    Optional['metric']        => Integer,
-    Optional['type']          => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
-    Optional['scope']         => Enum['global', 'link', 'host'],
-    Optional['table']         => Integer,
+    Optional['from']            => Stdlib::IP::Address,
+    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'via'                       => Stdlib::IP::Address::Nosubnet,
+    Optional['on_link']         => Boolean,
+    Optional['metric']          => Integer,
+    Optional['type']            => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
+    Optional['scope']           => Enum['global', 'link', 'host'],
+    Optional['table']           => Integer,
   }]]]                                                            $routes = undef,
   Optional[Array[Struct[{
-    'from'                    => Stdlib::IP::Address,
-    'to'                      => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
-    Optional[table]           => Integer,
-    Optional[priority]        => Integer,
-    Optional[fwmark]          => Integer,
-    Optional[type_of_service] => Integer,
+    'from'                      => Stdlib::IP::Address,
+    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    Optional['table']           => Integer,
+    Optional['priority']        => Integer,
+    Optional['mark']            => Integer,
+    Optional['type_of_service'] => Integer,
   }]]]                                                            $routing_policy = undef,
 
   # bonds specific properties
   Array[String]                                                   $interfaces = undef,
   Optional[Struct[{
-    Optional['mode']                    => Enum['balance-rr', 'active-backup', 'balance-xor', 'broadcast', '802.3ad', 'balance-tlb', 'balance-alb'],
+    Optional['mode']                    => Enum['balance-rr', 'active-backup', 'balance-xor',
+                                                'broadcast', '802.3ad', 'balance-tlb', 'balance-alb'],
     Optional['lacp_rate']               => Enum['slow', 'fast'],
     Optional['mii_monitor_interval']    => Variant[Float, Integer],
     Optional['min_links']               => Integer,
@@ -60,7 +87,6 @@
     Optional['learn_packet_interval']   => String,
     Optional['primary']                 => String,
   }]]                                                             $parameters = undef,
-  Optional[Boolean]                                               $critical = undef,
 
 | -%>
     <%= $name %>:
@@ -74,20 +100,80 @@
     <%- unless $dhcp6 =~ Undef { -%>
       dhcp6: <%= $dhcp6 %>
     <%- } -%>
+    <%- unless $ipv6_privacy =~ Undef { -%>
+      ipv6-privacy: <%= $ipv6_privacy %>
+    <%- } -%>
+    <%- if $link_local { -%>
+      link-local: <%= $link_local %>
+    <%- } -%>
+    <%- unless $critical =~ Undef { -%>
+      critical: <%= $critical %>
+    <%- } -%>
     <%- if $dhcp_identifier { -%>
       dhcp-identifier: <%= $dhcp_identifier %>
+    <%- } -%>
+    <%- if $dhcp4_overrides { -%>
+      dhcp4-overrides:
+        <%- unless $dhcp4_overrides[use_dns] =~ Undef { -%>
+        use-dns: <%= $dhcp4_overrides[use_dns] %>
+        <%- } -%>
+        <%- unless $dhcp4_overrides[use_ntp] =~ Undef { -%>
+        use-ntp: <%= $dhcp4_overrides[use_ntp] %>
+        <%- } -%>
+        <%- unless $dhcp4_overrides[send_hostname] =~ Undef { -%>
+        send-hostname: <%= $dhcp4_overrides[send_hostname] %>
+        <%- } -%>
+        <%- unless $dhcp4_overrides[use_hostname] =~ Undef { -%>
+        use-hostname: <%= $dhcp4_overrides[use_hostname] %>
+        <%- } -%>
+        <%- unless $dhcp4_overrides[use_mtu] =~ Undef { -%>
+        use-mtu: <%= $dhcp4_overrides[use_mtu] %>
+        <%- } -%>
+        <%- if $dhcp4_overrides[hostname] { -%>
+        hostname: <%= $dhcp4_overrides[hostname] %>
+        <%- } -%>
+        <%- unless $dhcp4_overrides[use_routes] =~ Undef { -%>
+        use-routes: <%= $dhcp4_overrides[use_routes] %>
+        <%- } -%>
+        <%- if $dhcp4_overrides[route_metric] { -%>
+        route-metric: <%= $dhcp4_overrides[route_metric] %>
+        <%- } -%>
+    <%- } -%>
+    <%- if $dhcp6_overrides { -%>
+      dhcp6-overrides:
+        <%- unless $dhcp6_overrides[use_dns] =~ Undef { -%>
+        use-dns: <%= $dhcp6_overrides[use_dns] %>
+        <%- } -%>
+        <%- unless $dhcp6_overrides[use_ntp] =~ Undef { -%>
+        use-ntp: <%= $dhcp6_overrides[use_ntp] %>
+        <%- } -%>
+        <%- unless $dhcp6_overrides[send_hostname] =~ Undef { -%>
+        send-hostname: <%= $dhcp6_overrides[send_hostname] %>
+        <%- } -%>
+        <%- unless $dhcp6_overrides[use_hostname] =~ Undef { -%>
+        use-hostname: <%= $dhcp6_overrides[use_hostname] %>
+        <%- } -%>
+        <%- unless $dhcp6_overrides[use_mtu] =~ Undef { -%>
+        use-mtu: <%= $dhcp6_overrides[use_mtu] %>
+        <%- } -%>
+        <%- if $dhcp6_overrides[hostname] { -%>
+        hostname: <%= $dhcp6_overrides[hostname] %>
+        <%- } -%>
+        <%- unless $dhcp6_overrides[use_routes] =~ Undef { -%>
+        use-routes: <%= $dhcp6_overrides[use_routes] %>
+        <%- } -%>
+        <%- if $dhcp6_overrides[route_metric] { -%>
+        route-metric: <%= $dhcp6_overrides[route_metric] %>
+        <%- } -%>
     <%- } -%>
     <%- unless $accept_ra =~ Undef { -%>
       accept-ra: <%= $accept_ra %>
     <%- } -%>
     <%- if $addresses { -%>
-      addresses: 
+      addresses:
       <%- $addresses.each |$address| { -%>
         - <%= $address %>
       <%- } -%>
-    <%- } -%>
-    <%- if $mtu { -%>
-      mtu: <%= $mtu %>
     <%- } -%>
     <%- if $gateway4 { -%>
       gateway4: <%= $gateway4 %>
@@ -110,8 +196,17 @@
     <%- if $macaddress { -%>
       macaddress: <%= $macaddress %>
     <%- } -%>
+    <%- if $mtu { -%>
+      mtu: <%= $mtu %>
+    <%- } -%>
     <%- if $optional { -%>
       optional: <%= $optional %>
+    <%- } -%>
+    <%- if $optional_addresses { -%>
+      optional-addresses:
+      <%- $optional_addresses.each |$optional_address| { -%>
+        - <%= $optional_address %>
+      <%- } -%>
     <%- } -%>
     <%- if $routes { -%>
       routes:
@@ -208,7 +303,4 @@
         <%- if $parameters[primary] { -%>
         primary: <%= $parameters[primary] %>
         <%- } -%>
-    <%- } -%>
-    <%- unless $critical =~ Undef { -%>
-      critical: <%= $critical %>
     <%- } -%>
