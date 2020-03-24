@@ -134,7 +134,7 @@ define netplan::bridges (
   Optional[Stdlib::IP::Address::V4::Nosubnet]                     $gateway4 = undef,
   Optional[Stdlib::IP::Address::V6::Nosubnet]                     $gateway6 = undef,
   Optional[Struct[{
-    Optional['search']          => Array[Stdlib::Fqdn],    
+    Optional['search']          => Array[Stdlib::Fqdn],
     'addresses'                 => Array[Stdlib::IP::Address]
   }]]                                                             $nameservers = undef,
   Optional[Stdlib::MAC]                                           $macaddress = undef,
