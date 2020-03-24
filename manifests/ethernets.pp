@@ -154,7 +154,7 @@ define netplan::ethernets (
   Optional[Stdlib::IP::Address::V4::Nosubnet]                     $gateway4 = undef,
   Optional[Stdlib::IP::Address::V6::Nosubnet]                     $gateway6 = undef,
   Optional[Struct[{
-    Optional['search']          => Array[Stdlib::Fqdn],    
+    Optional['search']          => Array[Stdlib::Fqdn],
     'addresses'                 => Array[Stdlib::IP::Address]
   }]]                                                             $nameservers = undef,
   Optional[Stdlib::MAC]                                           $macaddress = undef,
@@ -191,7 +191,7 @@ define netplan::ethernets (
     Optional['client_certificate']  => String,
     Optional['client_key']          => String,
     Optional['client_key_password'] => String,
-  }]]                                                             $auth = undef,  
+  }]]                                                             $auth = undef,
 
   ){
 
