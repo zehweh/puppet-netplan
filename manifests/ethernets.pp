@@ -164,7 +164,7 @@ define netplan::ethernets (
   Optional[Array[Struct[{
     Optional['from']            => Stdlib::IP::Address,
     'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
-    'via'                       => Stdlib::IP::Address::Nosubnet,
+    Optional['via']             => Stdlib::IP::Address::Nosubnet,
     Optional['on_link']         => Boolean,
     Optional['metric']          => Integer,
     Optional['type']            => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
