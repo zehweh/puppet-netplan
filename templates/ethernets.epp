@@ -227,8 +227,11 @@
       routes:
       <%- $routes.each |$route| { -%>
         - to: <%= $route[to] %>
-         <%- if $route[via] { -%>
+          <%- if $route[via] { -%>
           via: <%= $route[via] %>
+          <%- } -%>
+          <%- if $route[from] { -%>
+          from: <%= $route[from] %>
           <%- } -%>
           <%- if $route[table] { -%>
           table: <%= $route[table] %>
