@@ -46,7 +46,7 @@
   Optional[Array[Struct[{
     Optional['from']            => Stdlib::IP::Address,
     'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
-    'via'                       => Stdlib::IP::Address::Nosubnet,
+    Optional['via']             => Stdlib::IP::Address::Nosubnet,
     Optional['on_link']         => Boolean,
     Optional['metric']          => Integer,
     Optional['type']            => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
@@ -72,6 +72,7 @@
     'input'                     => Integer,
     'output'                    => Integer,
   }]]                                                             $keys = undef,
+  Optional[Integer]                                               $ttl = undef,
 
 | -%>
     <%= $name %>:
@@ -197,7 +198,9 @@
       routes:
       <%- $routes.each |$route| { -%>
         - to: <%= $route[to] %>
+          <%- if $route[via] { -%>
           via: <%= $route[via] %>
+          <%- } -%>
           <%- if $route[table] { -%>
           table: <%= $route[table] %>
           <%- } -%>
@@ -206,6 +209,9 @@
           <%- } -%>
           <%- if $route[metric] { -%>
           metric: <%= $route[metric] %>
+          <%- } -%>
+          <%- if $route[scope] { -%>
+          scope: <%= $route[scope] %>
           <%- } -%>
       <%- } -%>
     <%- } -%>
@@ -239,4 +245,7 @@
       keys:
         input: <%= $keys[input] %>
         output: <%= $keys[output] %>
+    <%- } -%>
+    <%- if $ttl { -%>
+      ttl: <%= $ttl %>
     <%- } -%>
