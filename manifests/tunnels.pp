@@ -82,6 +82,8 @@
 #  Defines the address of the local endpoint of the tunnel.
 # @param remote
 #  Defines the address of the remote endpoint of the tunnel.
+# @param ttl
+#  Defines the ttl of the tunnel.
 # @param key
 #  Define keys to use for the tunnel. The key can be a number or a dotted quad (an IPv4 address). It is used for 
 #  identification of IP transforms. This is only required for vti and vti6 when using the networkd backend, and 
@@ -138,7 +140,7 @@ define netplan::tunnels (
   Optional[Array[Struct[{
     Optional['from']            => Stdlib::IP::Address,
     'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
-    'via'                       => Stdlib::IP::Address::Nosubnet,
+    Optional['via']             => Stdlib::IP::Address::Nosubnet,
     Optional['on_link']         => Boolean,
     Optional['metric']          => Integer,
     Optional['type']            => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
@@ -164,6 +166,7 @@ define netplan::tunnels (
     'input'                     => Integer,
     'output'                    => Integer,
   }]]                                                             $keys = undef,
+  Optional[Integer]                                               $ttl = undef,
 
   ){
 
@@ -210,6 +213,7 @@ define netplan::tunnels (
     'remote'             => $remote,
     'key'                => $key,
     'keys'               => $keys,
+    'ttl'                => $ttl
   })
 
   concat::fragment { $name:
