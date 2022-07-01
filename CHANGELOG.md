@@ -1,5 +1,12 @@
 # Changelog
 
+## Release 1.0.1
+
+#### Added
+- support for new routing options: advertised-receive-window, congestion-window, mtu
+- merged 'Gre tunnel fix' ([#25](https://github.com/zehweh/puppet-netplan/pull/25))
+- merged 'Add from to routes to ethernets' ([#21](https://github.com/zehweh/puppet-netplan/pull/21))
+
 ## Release 1.0.0
 
 #### Added

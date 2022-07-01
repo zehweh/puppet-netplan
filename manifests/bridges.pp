@@ -61,6 +61,9 @@
 #  type: The type of route. Valid options are “unicast" (default), “unreachable", “blackhole" or “prohibited".
 #  scope: The route scope, how wide-ranging it is to the network. Possible values are “global", “link", or “host".
 #  table: The table number to use for the route.
+#  mtu: The MTU to be used for the route, in bytes. Must be a positive integer value.
+#  congestion-window: The congestion window to be used for the route, represented by number of segments. Must be a positive integer value.
+#  advertised-receive-window: The receive window to be advertised for the route, represented by number of segments. Must be a positive integer value.
 # @param routing_policy
 #  The routing-policy block defines extra routing policy for a network, where traffic may be handled specially
 #  based on the source IP, firewall marking, etc.
@@ -142,14 +145,17 @@ define netplan::bridges (
   Optional[Boolean]                                               $optional = undef,
   Optional[Array[String]]                                         $optional_addresses = undef,
   Optional[Array[Struct[{
-    Optional['from']            => Stdlib::IP::Address,
-    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
-    'via'                       => Stdlib::IP::Address::Nosubnet,
-    Optional['on_link']         => Boolean,
-    Optional['metric']          => Integer,
-    Optional['type']            => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
-    Optional['scope']           => Enum['global', 'link', 'host'],
-    Optional['table']           => Integer,
+    Optional['from']                      => Stdlib::IP::Address,
+    'to'                                  => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    Optional['via']                       => Stdlib::IP::Address::Nosubnet,
+    Optional['on_link']                   => Boolean,
+    Optional['metric']                    => Integer,
+    Optional['type']                      => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
+    Optional['scope']                     => Enum['global', 'link', 'host'],
+    Optional['table']                     => Integer,
+    Optional['mtu']                       => Integer,
+    Optional['congestion_window']         => Integer,
+    Optional['advertised_receive_window'] => Integer,
   }]]]                                                            $routes = undef,
   Optional[Array[Struct[{
     'from'                      => Stdlib::IP::Address,

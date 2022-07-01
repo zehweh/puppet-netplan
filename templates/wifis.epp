@@ -53,14 +53,17 @@
   Optional[Boolean]                                               $optional = undef,
   Optional[Array[String]]                                         $optional_addresses = undef,
   Optional[Array[Struct[{
-    Optional['from']            => Stdlib::IP::Address,
-    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
-    'via'                       => Stdlib::IP::Address::Nosubnet,
-    Optional['on_link']         => Boolean,
-    Optional['metric']          => Integer,
-    Optional['type']            => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
-    Optional['scope']           => Enum['global', 'link', 'host'],
-    Optional['table']           => Integer,
+    Optional['from']                      => Stdlib::IP::Address,
+    'to'                                  => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    Optional['via']                       => Stdlib::IP::Address::Nosubnet,
+    Optional['on_link']                   => Boolean,
+    Optional['metric']                    => Integer,
+    Optional['type']                      => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
+    Optional['scope']                     => Enum['global', 'link', 'host'],
+    Optional['table']                     => Integer,
+    Optional['mtu']                       => Integer,
+    Optional['congestion_window']         => Integer,
+    Optional['advertised_receive_window'] => Integer,
   }]]]                                                            $routes = undef,
   Optional[Array[Struct[{
     'from'                      => Stdlib::IP::Address,
@@ -231,15 +234,35 @@
       routes:
       <%- $routes.each |$route| { -%>
         - to: <%= $route[to] %>
+          <%- if $route[via] { -%>
           via: <%= $route[via] %>
-          <%- if $route[table] { -%>
-          table: <%= $route[table] %>
+          <%- } -%>
+          <%- if $route[from] { -%>
+          from: <%= $route[from] %>
           <%- } -%>
           <%- unless $route[on_link] =~ Undef { -%>
           on-link: <%= $route[on_link] %>
           <%- } -%>
           <%- if $route[metric] { -%>
           metric: <%= $route[metric] %>
+          <%- } -%>
+          <%- unless $route['type'] =~ Undef { -%>
+          type: <%= $route['type'] %>
+          <%- } -%>
+          <%- unless $route[scope] =~ Undef { -%>
+          scope: <%= $route[scope] %>
+          <%- } -%>
+          <%- if $route[table] { -%>
+          table: <%= $route[table] %>
+          <%- } -%>
+          <%- if $route[mtu] { -%>
+          mtu: <%= $route[mtu] %>
+          <%- } -%>
+          <%- if $route[congestion_window] { -%>
+          congestion-window: <%= $route[congestion_window] %>
+          <%- } -%>
+          <%- if $route[advertised_receive_window] { -%>
+          advertised-receive-window: <%= $route[advertised_receive_window] %>
           <%- } -%>
       <%- } -%>
     <%- } -%>
