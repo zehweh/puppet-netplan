@@ -121,6 +121,7 @@ define netplan::bridges (
     Optional['hostname']        => Stdlib::Fqdn,
     Optional['use_routes']      => Boolean,
     Optional['route_metric']    => Integer,
+    Optional['use_domains']     => Variant[Enum['route', 'true', 'false', 'yes', 'no'], Boolean],
   }]]                                                             $dhcp4_overrides = undef,
   Optional[Struct[{
     Optional['use_dns']         => Boolean,
@@ -131,6 +132,7 @@ define netplan::bridges (
     Optional['hostname']        => Stdlib::Fqdn,
     Optional['use_routes']      => Boolean,
     Optional['route_metric']    => Integer,
+    Optional['use_domains']     => Variant[Enum['route', 'true', 'false', 'yes', 'no'], Boolean],
   }]]                                                             $dhcp6_overrides = undef,
   Optional[Boolean]                                               $accept_ra = undef,
   Optional[Array[Stdlib::IP::Address]]                            $addresses = undef,

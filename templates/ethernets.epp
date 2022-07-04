@@ -29,6 +29,7 @@
     Optional['hostname']        => Stdlib::Fqdn,
     Optional['use_routes']      => Boolean,
     Optional['route_metric']    => Integer,
+    Optional['use_domains']     => Variant[Enum['route', 'true', 'false', 'yes', 'no'], Boolean],
   }]]                                                             $dhcp4_overrides = undef,
   Optional[Struct[{
     Optional['use_dns']         => Boolean,
@@ -39,6 +40,7 @@
     Optional['hostname']        => Stdlib::Fqdn,
     Optional['use_routes']      => Boolean,
     Optional['route_metric']    => Integer,
+    Optional['use_domains']     => Variant[Enum['route', 'true', 'false', 'yes', 'no'], Boolean],
   }]]                                                             $dhcp6_overrides = undef,
   Optional[Boolean]                                               $accept_ra = undef,
   Optional[Array[Stdlib::IP::Address]]                            $addresses = undef,
@@ -156,6 +158,9 @@
         <%- if $dhcp4_overrides[route_metric] { -%>
         route-metric: <%= $dhcp4_overrides[route_metric] %>
         <%- } -%>
+        <%- if $dhcp4_overrides[use_domains] { -%>
+        use-domains: <%= $dhcp4_overrides[use_domains] %>
+        <%- } -%>
     <%- } -%>
     <%- if $dhcp6_overrides { -%>
       dhcp6-overrides:
@@ -182,6 +187,9 @@
         <%- } -%>
         <%- if $dhcp6_overrides[route_metric] { -%>
         route-metric: <%= $dhcp6_overrides[route_metric] %>
+        <%- } -%>
+        <%- if $dhcp6_overrides[use_domains] { -%>
+        use-domains: <%= $dhcp6_overrides[use_domains] %>
         <%- } -%>
     <%- } -%>
     <%- unless $accept_ra =~ Undef { -%>
