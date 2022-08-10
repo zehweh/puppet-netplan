@@ -52,6 +52,10 @@
 #  Add static addresses to the interface in addition to the ones received through DHCP or RA.
 #  Each sequence entry is in CIDR notation, i. e. of the form addr/prefixlen. addr is an IPv4 or IPv6
 #  address as recognized by inet_pton(3) and prefixlen the number of bits of the subnet.
+#  Label can also been specified on a per address basis as shown. Requried netplan 0.104 or greater
+#    - 192.168.1.6/24:
+#        label: 'mylabel'
+#    - 192.168.2.6/24
 # @param gateway4
 #  Set default gateway for IPv4, for manual address configuration. This requires setting addresses too.
 # @param gateway6
@@ -155,7 +159,7 @@ define netplan::ethernets (
     Optional['use_domains']     => Variant[Enum['route', 'true', 'false', 'yes', 'no'], Boolean],
   }]]                                                             $dhcp6_overrides = undef,
   Optional[Boolean]                                               $accept_ra = undef,
-  Optional[Array[Stdlib::IP::Address]]                            $addresses = undef,
+  Optional[Array[Variant[Stdlib::IP::Address,Hash[Stdlib::IP::Address,Struct[{label => String[1]}]]]]] $addresses = undef,
   Optional[Stdlib::IP::Address::V4::Nosubnet]                     $gateway4 = undef,
   Optional[Stdlib::IP::Address::V6::Nosubnet]                     $gateway6 = undef,
   Optional[Struct[{

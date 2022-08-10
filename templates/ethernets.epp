@@ -43,7 +43,7 @@
     Optional['use_domains']     => Variant[Enum['route', 'true', 'false', 'yes', 'no'], Boolean],
   }]]                                                             $dhcp6_overrides = undef,
   Optional[Boolean]                                               $accept_ra = undef,
-  Optional[Array[Stdlib::IP::Address]]                            $addresses = undef,
+  Optional[Array[Variant[Stdlib::IP::Address,Hash[Stdlib::IP::Address,Struct[{label => String[1]}]]]]] $addresses = undef,
   Optional[Stdlib::IP::Address::V4::Nosubnet]                     $gateway4 = undef,
   Optional[Stdlib::IP::Address::V6::Nosubnet]                     $gateway6 = undef,
   Optional[Struct[{
@@ -197,8 +197,15 @@
     <%- } -%>
     <%- if $addresses { -%>
       addresses:
-      <%- $addresses.each |$address| { -%>
-        - <%= $address %>
+      <%- $addresses.each | $address | { -%>
+        <%- if $address =~ Hash { -%>
+          <%- $address.each | $add, $label | { -%>
+            - <%= $add %>:
+                label: <%= $label['label'] %>
+          <%- } -%>
+      <%- } else { -%>
+            - <%= $address %>
+        <%- } -%>
       <%- } -%>
     <%- } -%>
     <%- if $gateway4 { -%>
