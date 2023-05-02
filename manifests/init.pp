@@ -14,6 +14,8 @@
 #  hash with bonds configuration (see bonds.pp)
 # @param config_file
 #  absolute path to netplan config file
+# @param config_file_mode
+#  file permissions for netplan config file
 # @param renderer
 #  network renderer - can be one of 'networkd' and 'NetworkManager'
 # @param version
@@ -31,6 +33,7 @@ class netplan (
   Optional[Hash]       $bonds = undef,
   Optional[Hash]       $tunnels = undef,
   Stdlib::Absolutepath $config_file = '/etc/netplan/01-netcfg.yaml',
+  String               $config_file_mode = '0600',
   String               $renderer = 'networkd',
   Integer              $version = 2,
   Boolean              $netplan_apply = true,
@@ -62,6 +65,7 @@ class netplan (
 
   concat { $netplan::config_file:
     ensure => present,
+    mode   => $config_file_mode,
     notify => $notify,
   }
 
