@@ -17,7 +17,7 @@
 # @param link_local
 #  Configure the link-local addresses to bring up. Valid options are ‘ipv4’ and ‘ipv6’.
 # @param critical
-#  (networkd backend only) Designate the connection as "critical to the system", meaning that special 
+#  (networkd backend only) Designate the connection as "critical to the system", meaning that special
 #  care will be taken by systemd-networkd to not release the IP from DHCP when the daemon is restarted.
 # @param dhcp_identifier
 #  When set to ‘mac’; pass that setting over to systemd-networkd to use the device’s MAC address as a
@@ -78,8 +78,8 @@
 #  type_of_service: Match this policy rule based on the type of service number applied to the traffic.
 #
 # @param mode
-#  Defines the tunnel mode. Valid options are sit, gre, ip6gre, ipip, ipip6, ip6ip6, vti, and vti6. Additionally, 
-#  the networkd backend also supports gretap and ip6gretap modes. In addition, the NetworkManager backend supports 
+#  Defines the tunnel mode. Valid options are sit, gre, ip6gre, ipip, ipip6, ip6ip6, vti, and vti6. Additionally,
+#  the networkd backend also supports gretap and ip6gretap modes. In addition, the NetworkManager backend supports
 #  isatap tunnels.
 # @param local
 #  Defines the address of the local endpoint of the tunnel.
@@ -88,8 +88,8 @@
 # @param ttl
 #  Defines the ttl of the tunnel.
 # @param key
-#  Define keys to use for the tunnel. The key can be a number or a dotted quad (an IPv4 address). It is used for 
-#  identification of IP transforms. This is only required for vti and vti6 when using the networkd backend, and 
+#  Define keys to use for the tunnel. The key can be a number or a dotted quad (an IPv4 address). It is used for
+#  identification of IP transforms. This is only required for vti and vti6 when using the networkd backend, and
 #  for gre or ip6gre tunnels when using the NetworkManager backend.
 # @param keys
 #  You can further specify input and output:
@@ -144,7 +144,7 @@ define netplan::tunnels (
   Optional[Array[String]]                                         $optional_addresses = undef,
   Optional[Array[Struct[{
     Optional['from']                      => Stdlib::IP::Address,
-    'to'                                  => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                                  => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['via']                       => Stdlib::IP::Address::Nosubnet,
     Optional['on_link']                   => Boolean,
     Optional['metric']                    => Integer,
@@ -157,7 +157,7 @@ define netplan::tunnels (
   }]]]                                                            $routes = undef,
   Optional[Array[Struct[{
     'from'                      => Stdlib::IP::Address,
-    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                        => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['table']           => Integer,
     Optional['priority']        => Integer,
     Optional['mark']            => Integer,
