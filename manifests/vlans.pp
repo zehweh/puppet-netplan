@@ -130,7 +130,7 @@ define netplan::vlans (
   Optional[Array[String]]                                         $optional_addresses = undef,
   Optional[Array[Struct[{
     Optional['from']                      => Stdlib::IP::Address,
-    'to'                                  => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                                  => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['via']                       => Stdlib::IP::Address::Nosubnet,
     Optional['on_link']                   => Boolean,
     Optional['metric']                    => Integer,
@@ -143,7 +143,7 @@ define netplan::vlans (
   }]]]                                                            $routes = undef,
   Optional[Array[Struct[{
     'from'                      => Stdlib::IP::Address,
-    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                        => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['table']           => Integer,
     Optional['priority']        => Integer,
     Optional['mark']            => Integer,

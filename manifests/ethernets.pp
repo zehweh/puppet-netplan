@@ -5,20 +5,20 @@
 # @note intended to be used only by netplan class
 #
 # @param match
-#  This selects a subset of available physical devices by various hardware properties. 
-#  The following configuration will then apply to all matching devices, as soon as they appear. 
-#  All specified properties must match. 
-#  name: Current interface name. Globs are supported, and the primary use case for matching on names, 
-#    as selecting one fixed name can be more easily achieved with having no match: at all and just using 
+#  This selects a subset of available physical devices by various hardware properties.
+#  The following configuration will then apply to all matching devices, as soon as they appear.
+#  All specified properties must match.
+#  name: Current interface name. Globs are supported, and the primary use case for matching on names,
+#    as selecting one fixed name can be more easily achieved with having no match: at all and just using
 #    the ID (see above). Note that currently only networkd supports globbing, NetworkManager does not.
 #  macaddress: Device’s MAC address in the form "XX:XX:XX:XX:XX:XX". Globs are not allowed.
-#  driver: Kernel driver name, corresponding to the DRIVER udev property. Globs are supported. 
+#  driver: Kernel driver name, corresponding to the DRIVER udev property. Globs are supported.
 #    Matching on driver is only supported with networkd.
 # @param set_name
-#  When matching on unique properties such as path or MAC, or with additional assumptions such as 
-#  "there will only ever be one wifi device", match rules can be written so that they only match one device. 
-#  Then this property can be used to give that device a more specific/desirable/nicer name than the default 
-#  from udev’s ifnames. Any additional device that satisfies the match rules will then fail to get renamed 
+#  When matching on unique properties such as path or MAC, or with additional assumptions such as
+#  "there will only ever be one wifi device", match rules can be written so that they only match one device.
+#  Then this property can be used to give that device a more specific/desirable/nicer name than the default
+#  from udev’s ifnames. Any additional device that satisfies the match rules will then fail to get renamed
 #  and keep the original kernel name (and dmesg will show an error).
 # @param wakeonlan
 #  Enable wake on LAN. Off by default.
@@ -168,7 +168,7 @@ define netplan::ethernets (
   Optional[Array[String]]                                         $optional_addresses = undef,
   Optional[Array[Struct[{
     Optional['from']                      => Stdlib::IP::Address,
-    'to'                                  => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                                  => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['via']                       => Stdlib::IP::Address::Nosubnet,
     Optional['on_link']                   => Boolean,
     Optional['metric']                    => Integer,
@@ -181,7 +181,7 @@ define netplan::ethernets (
   }]]]                                                            $routes = undef,
   Optional[Array[Struct[{
     'from'                      => Stdlib::IP::Address,
-    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                        => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['table']           => Integer,
     Optional['priority']        => Integer,
     Optional['mark']            => Integer,

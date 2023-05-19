@@ -80,24 +80,24 @@
 # @param interfaces
 #  All devices matching this ID list will be added to the bridge.
 # @param parameters
-#  Customization parameters for special bridging options. Using the NetworkManager renderer, parameter values 
-#  for time intervals should be expressed in milliseconds; for the systemd renderer, they should be in seconds 
+#  Customization parameters for special bridging options. Using the NetworkManager renderer, parameter values
+#  for time intervals should be expressed in milliseconds; for the systemd renderer, they should be in seconds
 #  unless otherwise specified.
 #  ageing_time: Set the period of time to keep a MAC address in the forwarding database after a packet is received.
-#  priority: Set the priority value for the bridge. This value should be a number between 0 and 65535. 
+#  priority: Set the priority value for the bridge. This value should be a number between 0 and 65535.
 #    Lower values mean higher priority. The bridge with the higher priority will be elected as the root bridge.
-#  port_priority: Set the port priority to . The priority value is a number between 0 and 63. 
+#  port_priority: Set the port priority to . The priority value is a number between 0 and 63.
 #    This metric is used in the designated port and root port selection algorithms.
-#  forward_delay: Specify the period of time the bridge will remain in Listening and Learning states before 
-#    getting to the Forwarding state. This value should be set in seconds for the systemd backend, and in 
+#  forward_delay: Specify the period of time the bridge will remain in Listening and Learning states before
+#    getting to the Forwarding state. This value should be set in seconds for the systemd backend, and in
 #    milliseconds for the NetworkManager backend.
-#  hello_time: Specify the interval between two hello packets being sent out from the root and designated bridges. 
+#  hello_time: Specify the interval between two hello packets being sent out from the root and designated bridges.
 #    Hello packets communicate information about the network topology.
-#  max_age: Set the maximum age of a hello packet. If the last hello packet is older than that value, 
+#  max_age: Set the maximum age of a hello packet. If the last hello packet is older than that value,
 #    the bridge will attempt to become the root bridge.
-#  path_cost: Set the cost of a path on the bridge. Faster interfaces should have a lower cost. This allows a 
+#  path_cost: Set the cost of a path on the bridge. Faster interfaces should have a lower cost. This allows a
 #    finer control on the network topology so that the fastest paths are available whenever possible.
-#  stp: Define whether the bridge should use Spanning Tree Protocol. The default value is "true", which means that 
+#  stp: Define whether the bridge should use Spanning Tree Protocol. The default value is "true", which means that
 #    Spanning Tree should be used.
 #
 define netplan::bridges (
@@ -148,7 +148,7 @@ define netplan::bridges (
   Optional[Array[String]]                                         $optional_addresses = undef,
   Optional[Array[Struct[{
     Optional['from']                      => Stdlib::IP::Address,
-    'to'                                  => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                                  => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['via']                       => Stdlib::IP::Address::Nosubnet,
     Optional['on_link']                   => Boolean,
     Optional['metric']                    => Integer,
@@ -161,7 +161,7 @@ define netplan::bridges (
   }]]]                                                            $routes = undef,
   Optional[Array[Struct[{
     'from'                      => Stdlib::IP::Address,
-    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                        => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['table']           => Integer,
     Optional['priority']        => Integer,
     Optional['mark']            => Integer,

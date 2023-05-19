@@ -80,57 +80,57 @@
 # @param interfaces
 #  All devices matching this ID list will be added to the bridge.
 # @param parameters
-#  Customization parameters for special bonding options. Using the NetworkManager renderer, parameter values 
-#  for intervals should be expressed in milliseconds; for the systemd renderer, they should be in seconds 
+#  Customization parameters for special bonding options. Using the NetworkManager renderer, parameter values
+#  for intervals should be expressed in milliseconds; for the systemd renderer, they should be in seconds
 #  unless otherwise specified.
-#  mode: Set the bonding mode used for the interfaces. The default is balance-rr (round robin). Possible values 
+#  mode: Set the bonding mode used for the interfaces. The default is balance-rr (round robin). Possible values
 #    are balance-rr, active-backup, balance-xor, broadcast, 802.3ad, balance-tlb, and balance-alb.
-#  lacp_rate: Set the rate at which LACPDUs are transmitted. This is only useful in 802.3ad mode. 
+#  lacp_rate: Set the rate at which LACPDUs are transmitted. This is only useful in 802.3ad mode.
 #    Possible values are slow (30 seconds, default), and fast (every second).
-#  mii_monitor_interval: Specifies the interval for MII monitoring (verifying if an interface of the bond 
+#  mii_monitor_interval: Specifies the interval for MII monitoring (verifying if an interface of the bond
 #    has carrier). The default is 0; which disables MII monitoring.
 #  min_links: The minimum number of links up in a bond to consider the bond interface to be up.
-#  transmit_hash_policy: Specifies the transmit hash policy for the selection of slaves. This is only 
-#    useful in balance-xor, 802.3ad and balance-tlb modes. 
+#  transmit_hash_policy: Specifies the transmit hash policy for the selection of slaves. This is only
+#    useful in balance-xor, 802.3ad and balance-tlb modes.
 #    Possible values are layer2, layer3+4, layer2+3, encap2+3, and encap3+4.
-#  ad_select: Set the aggregation selection mode. Possible values are stable, bandwidth, and count. This option 
+#  ad_select: Set the aggregation selection mode. Possible values are stable, bandwidth, and count. This option
 #    is only used in 802.3ad mode.
-#  all_slaves_active: If the bond should drop duplicate frames received on inactive ports, set this option to 
-#    false. If they should be delivered, set this option to true. The default value is false, 
+#  all_slaves_active: If the bond should drop duplicate frames received on inactive ports, set this option to
+#    false. If they should be delivered, set this option to true. The default value is false,
 #    and is the desirable behavior in most situations.
-#  arp_interval: Set the interval value for how frequently ARP link monitoring should happen. 
+#  arp_interval: Set the interval value for how frequently ARP link monitoring should happen.
 #    The default value is 0, which disables ARP monitoring.
-#  arp_ip_targets: IPs of other hosts on the link which should be sent ARP requests in order to validate 
-#    that a slave is up. This option is only used when arp-interval is set to a value other than 0. 
-#    At least one IP address must be given for ARP link monitoring to function. Only IPv4 addresses are supported. 
+#  arp_ip_targets: IPs of other hosts on the link which should be sent ARP requests in order to validate
+#    that a slave is up. This option is only used when arp-interval is set to a value other than 0.
+#    At least one IP address must be given for ARP link monitoring to function. Only IPv4 addresses are supported.
 #    You can specify up to 16 IP addresses. The default value is an empty list.
-#  arp_validate: Configure how ARP replies are to be validated when using ARP link monitoring. 
+#  arp_validate: Configure how ARP replies are to be validated when using ARP link monitoring.
 #    Possible values are none, active, backup, and all.
-#  arp_all_targets: Specify whether to use any ARP IP target being up as sufficient for a slave to be considered up; 
-#    or if all the targets must be up. This is only used for active-backup mode when arp-validate is enabled. 
+#  arp_all_targets: Specify whether to use any ARP IP target being up as sufficient for a slave to be considered up;
+#    or if all the targets must be up. This is only used for active-backup mode when arp-validate is enabled.
 #    Possible values are any and all.
 #  up_delay: Specify the delay before enabling a link once the link is physically up. The default value is 0.
 #  down_delay: Specify the delay before disabling a link once the link has been lost. The default value is 0.
-#  fail_over_mac_policy: Set whether to set all slaves to the same MAC address when adding them to the bond, 
+#  fail_over_mac_policy: Set whether to set all slaves to the same MAC address when adding them to the bond,
 #    or how else the system should handle MAC addresses. The possible values are none, active, and follow.
-#  gratuitious_arp: Specify how many ARP packets to send after failover. Once a link is up on a new slave, 
-#    a notification is sent and possibly repeated if this value is set to a number greater than 1. The default value 
+#  gratuitious_arp: Specify how many ARP packets to send after failover. Once a link is up on a new slave,
+#    a notification is sent and possibly repeated if this value is set to a number greater than 1. The default value
 #    is 1 and valid values are between 1 and 255. This only affects active-backup mode.
-#  packets_per_slave: In balance-rr mode, specifies the number of packets to transmit on a slave before switching 
-#    to the next. When this value is set to 0, slaves are chosen at random. Allowable values are between 0 and 65535. 
+#  packets_per_slave: In balance-rr mode, specifies the number of packets to transmit on a slave before switching
+#    to the next. When this value is set to 0, slaves are chosen at random. Allowable values are between 0 and 65535.
 #    The default value is 1. This setting is only used in balance-rr mode.
-#  primary_reselect_policy: Set the reselection policy for the primary slave. On failure of the active slave, the 
-#    system will use this policy to decide how the new active slave will be chosen and how recovery will be handled. 
+#  primary_reselect_policy: Set the reselection policy for the primary slave. On failure of the active slave, the
+#    system will use this policy to decide how the new active slave will be chosen and how recovery will be handled.
 #    The possible values are always, better, and failure.
-#  resend_igmp: In modes balance-rr, active-backup, balance-tlb and balance-alb, a failover can switch IGMP traffic 
+#  resend_igmp: In modes balance-rr, active-backup, balance-tlb and balance-alb, a failover can switch IGMP traffic
 #    from one slave to another.
-#    This parameter specifies how many IGMP membership reports are issued on a failover event. Values range 
-#    from 0 to 255. 0 disables sending membership reports. Otherwise, the first membership report is sent on 
+#    This parameter specifies how many IGMP membership reports are issued on a failover event. Values range
+#    from 0 to 255. 0 disables sending membership reports. Otherwise, the first membership report is sent on
 #    failover and subsequent reports are sent at 200ms intervals.
-#  learn_packet_interval: Specify the interval between sending learning packets to each slave. The value range is 
+#  learn_packet_interval: Specify the interval between sending learning packets to each slave. The value range is
 #    between 1 and 0x7fffffff. The default value is 1. This option only affects balance-tlb and balance-alb modes.
-#  primary: Specify a device to be used as a primary slave, or preferred device to use as a slave for the bond 
-#    (ie. the preferred device to send data through), whenever it is available. 
+#  primary: Specify a device to be used as a primary slave, or preferred device to use as a slave for the bond
+#    (ie. the preferred device to send data through), whenever it is available.
 #    This only affects active-backup, balance-alb, and balance-tlb modes.
 #
 define netplan::bonds (
@@ -181,7 +181,7 @@ define netplan::bonds (
   Optional[Array[String]]                                         $optional_addresses = undef,
   Optional[Array[Struct[{
     Optional['from']                      => Stdlib::IP::Address,
-    'to'                                  => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                                  => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['via']                       => Stdlib::IP::Address::Nosubnet,
     Optional['on_link']                   => Boolean,
     Optional['metric']                    => Integer,
@@ -194,7 +194,7 @@ define netplan::bonds (
   }]]]                                                            $routes = undef,
   Optional[Array[Struct[{
     'from'                      => Stdlib::IP::Address,
-    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                        => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['table']           => Integer,
     Optional['priority']        => Integer,
     Optional['mark']            => Integer,

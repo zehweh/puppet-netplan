@@ -97,23 +97,23 @@
 #  type_of_service: Match this policy rule based on the type of service number applied to the traffic.
 #
 # @param access-points
-#  This provides pre-configured connections to NetworkManager. Note that users can of course select other 
-#  access points/SSIDs. The keys of the mapping are the SSIDs, and the values are mappings with the following 
+#  This provides pre-configured connections to NetworkManager. Note that users can of course select other
+#  access points/SSIDs. The keys of the mapping are the SSIDs, and the values are mappings with the following
 #  supported properties:
-#  password: Enable WPA2 authentication and set the passphrase for it. If not given, the network is 
+#  password: Enable WPA2 authentication and set the passphrase for it. If not given, the network is
 #    assumed to be open. Other authentication modes are not currently supported.
-#  mode: Possible access point modes are infrastructure (the default), ap (create an access point to which 
-#    other devices can connect), and adhoc (peer to peer networks without a central access point). 
+#  mode: Possible access point modes are infrastructure (the default), ap (create an access point to which
+#    other devices can connect), and adhoc (peer to peer networks without a central access point).
 #    ap is only supported with NetworkManager.
-#  auth: 
-#    key_management: he supported key management modes are none (no key management); psk (WPA with 
-#      pre-shared key, common for home wifi); eap (WPA with EAP, common for enterprise wifi); 
+#  auth:
+#    key_management: he supported key management modes are none (no key management); psk (WPA with
+#      pre-shared key, common for home wifi); eap (WPA with EAP, common for enterprise wifi);
 #      and 802.1x (used primarily for wired Ethernet connections).
 #    password: The password string for EAP, or the pre-shared key for WPA-PSK.
-#    method: The EAP method to use. The supported EAP methods are tls (TLS), peap (Protected EAP), 
+#    method: The EAP method to use. The supported EAP methods are tls (TLS), peap (Protected EAP),
 #      and ttls (Tunneled TLS).
 #    identity: The identity to use for EAP.
-#    anonymous_identity: The identity to pass over the unencrypted channel if the chosen EAP method 
+#    anonymous_identity: The identity to pass over the unencrypted channel if the chosen EAP method
 #      supports passing a different tunnelled identity.
 #    ca_certificate: Path to a file with one or more trusted certificate authority (CA) certificates.
 #    client_certificate: Path to a file containing the certificate to be used by the client during authentication.
@@ -177,7 +177,7 @@ define netplan::wifis (
   Optional[Array[String]]                                         $optional_addresses = undef,
   Optional[Array[Struct[{
     Optional['from']                      => Stdlib::IP::Address,
-    'to'                                  => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                                  => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['via']                       => Stdlib::IP::Address::Nosubnet,
     Optional['on_link']                   => Boolean,
     Optional['metric']                    => Integer,
@@ -190,7 +190,7 @@ define netplan::wifis (
   }]]]                                                            $routes = undef,
   Optional[Array[Struct[{
     'from'                      => Stdlib::IP::Address,
-    'to'                        => Variant[Stdlib::IP::Address, Enum['0.0.0.0/0', '::/0']],
+    'to'                        => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
     Optional['table']           => Integer,
     Optional['priority']        => Integer,
     Optional['mark']            => Integer,
