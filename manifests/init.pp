@@ -12,6 +12,14 @@
 #  hash with bridges configuration (see bridges.pp)
 # @param bonds
 #  hash with bonds configuration (see bonds.pp)
+# @param tunnels
+#  hash with tunnels configuration (see tunnels.pp)
+# @param dummy_devices
+#  hash with dummy_devices configuration (see dummy_devices.pp)
+# @param modems
+#  hash with modems configuration (see modems.pp)
+# @param vrfs
+#  hash with vrfs configuration (see vrfs.pp)
 # @param config_file
 #  absolute path to netplan config file
 # @param config_file_mode
@@ -32,6 +40,9 @@ class netplan (
   Optional[Hash]       $bridges = undef,
   Optional[Hash]       $bonds = undef,
   Optional[Hash]       $tunnels = undef,
+  Optional[Hash]       $dummy_devices = undef,
+  Optional[Hash]       $modems = undef,
+  Optional[Hash]       $vrfs = undef,
   Stdlib::Absolutepath $config_file = '/etc/netplan/01-netcfg.yaml',
   String               $config_file_mode = '0600',
   String               $renderer = 'networkd',
@@ -132,5 +143,32 @@ class netplan (
       order   => '60',
     }
     create_resources(netplan::tunnels, $tunnels)
+  }
+
+  if $dummy_devices {
+    concat::fragment { 'dummy_devices_header':
+      target  => $netplan::config_file,
+      content => "  dummy-devices:\n",
+      order   => '70',
+    }
+    create_resources(netplan::dummy_devices, $dummy_devices)
+  }
+
+  if $modems {
+    concat::fragment { 'modems_header':
+      target  => $netplan::config_file,
+      content => "  modems:\n",
+      order   => '80',
+    }
+    create_resources(netplan::modems, $modems)
+  }
+
+  if $vrfs {
+    concat::fragment { 'vrfs_header':
+      target  => $netplan::config_file,
+      content => "  vrfs:\n",
+      order   => '90',
+    }
+    create_resources(netplan::vrfs, $vrfs)
   }
 }

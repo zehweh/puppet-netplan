@@ -38,7 +38,7 @@
   }]]                                                             $openvswitch = undef,
 
   # Properties for all device types
-  Optional[Enum['networkd', 'NetworkManager']]                    $renderer = undef,
+  Optional[Enum['NetworkManager']]                                $renderer = undef,
   #lint:ignore:quoted_booleans
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp4 = undef,
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp6 = undef,
@@ -118,29 +118,17 @@
   }]]]                                                            $routing_policy = undef,
   Optional[Boolean]                                               $neigh_suppress = undef,
 
-  # Properties for device type wifis
-  Optional[Hash[String, Struct[{
-    Optional['password']        => String,
-    Optional['mode']            => Enum['infrastructure', 'ap', 'adhoc'],
-    Optional['bssid']           => String,
-    Optional['band']            => Enum['5GHz', '2.4GHz'],
-    Optional['channel']         => Integer,
-    Optional['hidden']          => Boolean,
-    Optional['auth']            => Struct[{
-      Optional['key_management']      => Enum['none', 'psk', 'eap', '802.1x'],
-      Optional['password']            => String,
-      Optional['method']              => Enum['tls', 'peap', 'ttls'],
-      Optional['identity']            => String,
-      Optional['anonymous_identity']  => String,
-      Optional['ca_certificate']      => String,
-      Optional['client_certificate']  => String,
-      Optional['client_key']          => String,
-      Optional['client_key_password'] => String,
-      Optional['phase2_auth']         => String,
-    }]
-  }]]]                                                            $access_points = undef,
-  Optional[Array[Enum['any', 'disconnect']]]                      $wakeonwlan = undef,
-  Optional[String]                                                $regulatory_domain = undef,
+  # Properties for device type modems
+  Optional[String]                                                $apn = undef,
+  Optional[Boolean]                                               $auto_config = undef,
+  Optional[String]                                                $device_id = undef,
+  Optional[Integer]                                               $network_id = undef,
+  Optional[String]                                                $number = undef,
+  Optional[String]                                                $password = undef,
+  Optional[Integer]                                               $pin = undef,
+  Optional[String]                                                $sim_id = undef,
+  Optional[Integer]                                               $sim_operator_id = undef,
+  Optional[String]                                                $username = undef,
 
 | -%>
     <%= $name %>:
@@ -443,67 +431,33 @@
     <%- if $neigh_suppress != undef { -%>
       neigh-suppress: <%= $neigh_suppress %>
     <%- } -%>
-    <%# Properties for device type wifis -%>
-    <%- if $access_points != undef { -%>
-      access-points:
-      <%- $access_points.each |$ssid,$setting| { -%>
-        "<%= $ssid %>":
-          <%- if $setting[password] != undef { -%>
-          password: "<%= $setting[password] %>"
-          <%- } -%>
-          <%- if $setting[mode] != undef { -%>
-          mode: <%= $setting[mode] %>
-          <%- } -%>
-          <%- if $setting[bssid] != undef { -%>
-          bssid: <%= $setting[bssid] %>
-          <%- } -%>
-          <%- if $setting[band] != undef { -%>
-          band: <%= $setting[band] %>
-          <%- } -%>
-          <%- if $setting[channel] != undef { -%>
-          channel: <%= $setting[channel] %>
-          <%- } -%>
-          <%- if $setting[hidden] != undef { -%>
-          hidden: <%= $setting[hidden] %>
-          <%- } -%>
-          <%- if $setting[auth] { -%>
-          auth:
-            <%- if $setting[auth][key_management] { -%>
-            key-management: <%= $setting[auth][key_management] %>
-            <%- } -%>
-            <%- if $setting[auth][password] { -%>
-            password: "<%= $setting[auth][password] %>"
-            <%- } -%>
-            <%- if $setting[auth][method] { -%>
-            method: <%= $setting[auth][method] %>
-            <%- } -%>
-            <%- if $setting[auth][identity] { -%>
-            identity: "<%= $setting[auth][identity] %>"
-            <%- } -%>
-            <%- if $setting[auth][anonymous_identity] { -%>
-            anonymous-identity: "<%= $setting[auth][anonymous_identity] %>"
-            <%- } -%>
-            <%- if $setting[auth][ca_certificate] { -%>
-            ca-certificate: <%= $setting[auth][ca_certificate] %>
-            <%- } -%>
-            <%- if $setting[auth][client_certificate] { -%>
-            client-certificate: <%= $setting[auth][client_certificate] %>
-            <%- } -%>
-            <%- if $setting[auth][client_key] { -%>
-            client-key: <%= $setting[auth][client_key] %>
-            <%- } -%>
-            <%- if $setting[auth][client_key_password] { -%>
-            client-key-password: "<%= $setting[auth][client_key_password] %>"
-            <%- } -%>
-            <%- if $setting[auth][phase2_auth] { -%>
-            phase2-auth: "<%= $setting[auth][phase2_auth] %>"
-            <%- } -%>
-          <%- } -%>
-      <%- } -%>
+    <%- if $apn != undef { -%>
+      apn: <%= $apn %>
     <%- } -%>
-    <%- if $wakeonwlan != undef { -%>
-      wakeonwlan: <%= $wakeonwlan %>
+    <%- if $auto_config != undef { -%>
+      auto-config: <%= $auto_config %>
     <%- } -%>
-        <%- if $regulatory_domain != undef { -%>
-      regulatory-domain: <%= $regulatory_domain %>
+    <%- if $device_id != undef { -%>
+      device-id: <%= $device_id %>
+    <%- } -%>
+    <%- if $network_id != undef { -%>
+      network-id: <%= $network_id %>
+    <%- } -%>
+    <%- if $number != undef { -%>
+      number: "<%= $number %>"
+    <%- } -%>
+    <%- if $password != undef { -%>
+      password: <%= $password %>
+    <%- } -%>
+    <%- if $pin != undef { -%>
+      pin: <%= $pin %>
+    <%- } -%>
+    <%- if $sim_id != undef { -%>
+      sim-id: <%= $sim_id %>
+    <%- } -%>
+    <%- if $sim_operator_id != undef { -%>
+      sim-operator-id: <%= $sim_operator_id %>
+    <%- } -%>
+    <%- if $username != undef { -%>
+      username: <%= $username %>
     <%- } -%>

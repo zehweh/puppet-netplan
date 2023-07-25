@@ -1,75 +1,8 @@
-# @summary validates wifi config and writes it to $config_file via concat
+# @summary validates dummy-device config and writes it to $config_file via concat
 #
 # @api private
 #
 # @note intended to be used only by netplan class
-#
-# Properties for physical device types
-#
-# @param match
-#  This selects a subset of available physical devices by various hardware properties.
-#  The following configuration will then apply to all matching devices, as soon as they appear.
-#  All specified properties must match.
-#  name: Current interface name. Globs are supported, and the primary use case for matching on names,
-#    as selecting one fixed name can be more easily achieved with having no match: at all and just using
-#    the ID (see above). Note that currently only networkd supports globbing, NetworkManager does not.
-#  macaddress: Device’s MAC address in the form "XX:XX:XX:XX:XX:XX". Globs are not allowed.
-#  driver: Kernel driver name, corresponding to the DRIVER udev property. Globs are supported.
-#    Matching on driver is only supported with networkd.
-# @param set_name
-#  When matching on unique properties such as path or MAC, or with additional assumptions such as
-#  "there will only ever be one wifi device", match rules can be written so that they only match one device.
-#  Then this property can be used to give that device a more specific/desirable/nicer name than the default
-#  from udev’s ifnames. Any additional device that satisfies the match rules will then fail to get renamed
-#  and keep the original kernel name (and dmesg will show an error).
-# @param wakeonlan
-#  Enable wake on LAN. Off by default.
-# @param emit_lldp 
-#  (networkd backend only) Whether to emit LLDP packets. Off by default.
-# @param receive_checksum_offload 
-#  (networkd backend only) If set to true (false), the hardware offload for checksumming of ingress network 
-#  packets is enabled (disabled). When unset, the kernel’s default will be used.
-# @param transmit_checksum_offload 
-#  (networkd backend only) If set to true (false), the hardware offload for checksumming of egress network 
-#  packets is enabled (disabled). When unset, the kernel’s default will be used.
-# @param tcp_segmentation_offload
-#  (networkd backend only) If set to true (false), the TCP Segmentation Offload (TSO) is enabled (disabled). 
-#  When unset, the kernel’s default will be used.
-# @param tcp6_segmentation_offload
-#  (networkd backend only) If set to true (false), the TCP6 Segmentation Offload (tx-tcp6-segmentation) is 
-#  enabled (disabled). When unset, the kernel’s default will be used.
-# @param generic_segmentation_offload
-#  (networkd backend only) If set to true (false), the Generic Segmentation Offload (GSO) is 
-#  enabled (disabled). When unset, the kernel’s default will be used.
-# @param generic_receive_offload
-#  (networkd backend only) If set to true (false), the Generic Receive Offload (GRO) is enabled (disabled). 
-#  When unset, the kernel’s default will be used.
-# @param large_receive_offload
-#  (networkd backend only) If set to true (false), the Large Receive Offload (LRO) is enabled (disabled). 
-#  When unset, the kernel’s default will be used.
-# @param openvswitch
-#  This provides additional configuration for the openvswitch network device. If Open vSwitch is not 
-#  available on the system, netplan treats the presence of openvswitch configuration as an error.
-#  external_ids: Passed-through directly to Open vSwitch
-#  other_config: Passed-through directly to Open vSwitch
-#  lacp: Valid for bond interfaces. Accepts active, passive or off (the default).
-#  fail_mode: Valid for bridge interfaces. Accepts secure or standalone (the default).
-#  mcast_snooping: Valid for bridge interfaces. False by default.
-#  protocols: Valid for bridge interfaces or the network section. List of protocols to be used when negotiating 
-#    a connection with the controller. Accepts OpenFlow10, OpenFlow11, OpenFlow12, OpenFlow13, OpenFlow14, 
-#    and OpenFlow15.
-#  rstp: Valid for bridge interfaces. False by default.
-#  controller: Valid for bridge interfaces. Specify an external OpenFlow controller.
-#    addresses: Set the list of addresses to use for the controller targets. The syntax of these addresses 
-#      is as defined in ovs-vsctl(8). Example: addresses: [tcp:127.0.0.1:6653, "ssl:[fe80::1234%eth0]:6653"]
-#    connection_mode: Set the connection mode for the controller. Supported options are in-band and 
-#      out-of-band. The default is in-band.
-#  ports: Open vSwitch patch ports. Each port is declared as a pair of names which can be referenced as 
-#    interfaces in dependent virtual devices (bonds, bridges).
-#  ssl: Valid for global openvswitch settings. Options for configuring SSL server endpoint for the switch.
-#    ca_cert: Path to a file containing the CA certificate to be used.
-#    certificate: Path to a file containing the server certificate.
-#    private_key: Path to a file containing the private key for the server.
 #
 # Properties for all device types
 #
@@ -231,85 +164,7 @@
 #  Takes a boolean. Configures whether ARP and ND neighbor suppression is enabled for this port. When unset, the 
 #  kernel’s default will be used.
 #
-# Properties for device type wifis
-#
-# @param access-points
-#  This provides pre-configured connections to NetworkManager. Note that users can of course select other
-#  access points/SSIDs. The keys of the mapping are the SSIDs, and the values are mappings with the following
-#  supported properties:
-#  password: Enable WPA2 authentication and set the passphrase for it. If not given, the network is
-#    assumed to be open. Other authentication modes are not currently supported.
-#  mode: Possible access point modes are infrastructure (the default), ap (create an access point to which
-#    other devices can connect), and adhoc (peer to peer networks without a central access point).
-#    ap is only supported with NetworkManager.
-#  bssid: If specified, directs the device to only associate with the given access point.
-#  band: ossible bands are 5GHz (for 5GHz 802.11a) and 2.4GHz (for 2.4GHz 802.11), do not restrict the 802.11 
-#    frequency band of the network if unset (the default).
-#  channel: Wireless channel to use for the Wi-Fi connection. Because channel numbers overlap between bands, 
-#    this property takes effect only if the band property is also set.
-#  hidden: Set to true to change the SSID scan technique for connecting to hidden WiFi networks. Note this may 
-#    have slower performance compared to false (the default) when connecting to publicly broadcast SSIDs.
-#  auth:
-#    key_management: he supported key management modes are none (no key management); psk (WPA with
-#      pre-shared key, common for home wifi); eap (WPA with EAP, common for enterprise wifi);
-#      and 802.1x (used primarily for wired Ethernet connections).
-#    password: The password string for EAP, or the pre-shared key for WPA-PSK.
-#    method: The EAP method to use. The supported EAP methods are tls (TLS), peap (Protected EAP),
-#      and ttls (Tunneled TLS).
-#    identity: The identity to use for EAP.
-#    anonymous_identity: The identity to pass over the unencrypted channel if the chosen EAP method
-#      supports passing a different tunnelled identity.
-#    ca_certificate: Path to a file with one or more trusted certificate authority (CA) certificates.
-#    client_certificate: Path to a file containing the certificate to be used by the client during authentication.
-#    client_key: Path to a file containing the private key corresponding to client-certificate.
-#    client_key_password: Password to use to decrypt the private key specified in client-key if it is encrypted.
-#    phase2_auth: Phase 2 authentication mechanism.
-# @param wakeonwlan
-#  This enables WakeOnWLan on supported devices. Not all drivers support all options. May be any combination of 
-#  any, disconnect, magic_pkt, gtk_rekey_failure, eap_identity_req, four_way_handshake, rfkill_release or tcp 
-#  (NetworkManager only). Or the exclusive default flag (the default).
-# @param regulatory_domain
-#  This can be used to define the radio’s regulatory domain, to make use of additional WiFi channels outside the 
-#  “world domain”. Takes an ISO / IEC 3166 country code (like GB) or 00 to reset to the “world domain”. See 
-#  wireless-regdb for available values.
-#
-define netplan::wifis (
-
-  # Properties for physical device types
-  Optional[Struct[{
-        Optional['name']             => String,
-        Optional['macaddress']       => Stdlib::MAC,
-        Optional['driver']           => String,
-  }]]                                                             $match = undef,
-  Optional[String]                                                $set_name = undef,
-  Optional[Boolean]                                               $wakeonlan = undef,
-  Optional[Boolean]                                               $emit_lldp = undef,
-  Optional[Boolean]                                               $receive_checksum_offload = undef,
-  Optional[Boolean]                                               $transmit_checksum_offload = undef,
-  Optional[Boolean]                                               $tcp_segmentation_offload = undef,
-  Optional[Boolean]                                               $tcp6_segmentation_offload = undef,
-  Optional[Boolean]                                               $generic_segmentation_offload = undef,
-  Optional[Boolean]                                               $generic_receive_offload = undef,
-  Optional[Boolean]                                               $large_receive_offload = undef,
-  Optional[Struct[{
-        Optional['external_ids']     => String,
-        Optional['other_config']     => String,
-        Optional['lacp']             => Enum['active', 'passive', 'off'],
-        Optional['fail_mode']        => Enum['secure', 'standalone', 'off'],
-        Optional['mcast_snooping']   => Boolean,
-        Optional['protocols']        => Array[String],
-        Optional['rstp']             => Boolean,
-        Optional['controller']       => Struct[{
-            Optional['addresses']           => Array[String],
-            Optional['connection_mode']     => Enum['in-band', 'out-of-band'],
-        }],
-        Optional['ports']            => Array[Array[String]],
-        Optional['ssl']              => Struct[{
-            Optional['ca_cert']             => String,
-            Optional['certificate']         => String,
-            Optional['private_key']         => String,
-        }],
-  }]]                                                             $openvswitch = undef,
+define netplan::dummy_devices (
 
   # Properties for all device types
   Optional[Enum['networkd', 'NetworkManager']]                    $renderer = undef,
@@ -392,32 +247,7 @@ define netplan::wifis (
   }]]]                                                            $routing_policy = undef,
   Optional[Boolean]                                               $neigh_suppress = undef,
 
-  # Properties for device type wifis
-  Optional[Hash[String, Struct[{
-    Optional['password']        => String,
-    Optional['mode']            => Enum['infrastructure', 'ap', 'adhoc'],
-    Optional['bssid']           => String,
-    Optional['band']            => Enum['5GHz', '2.4GHz'],
-    Optional['channel']         => Integer,
-    Optional['hidden']          => Boolean,
-    Optional['auth']            => Struct[{
-      Optional['key_management']      => Enum['none', 'psk', 'eap', '802.1x'],
-      Optional['password']            => String,
-      Optional['method']              => Enum['tls', 'peap', 'ttls'],
-      Optional['identity']            => String,
-      Optional['anonymous_identity']  => String,
-      Optional['ca_certificate']      => String,
-      Optional['client_certificate']  => String,
-      Optional['client_key']          => String,
-      Optional['client_key_password'] => String,
-      Optional['phase2_auth']         => String,
-    }]
-  }]]]                                                            $access_points = undef,
-  Optional[Array[Enum['any', 'disconnect']]]                      $wakeonwlan = undef,
-  Optional[String]                                                $regulatory_domain = undef,
-
-  ){
-
+) {
   $_dhcp4 = $dhcp4 ? {
     true    => true,
     'yes'   => true,
@@ -436,26 +266,14 @@ define netplan::wifis (
 
   # show deprecation infos for gateway4 & gateway6
   if $gateway4 != undef {
-      notify {"puppet-netplan wifi ${name}: gateway4 has been deprecated, use default routes instead.": }
+      notify {"puppet-netplan dummy_device ${name}: gateway4 has been deprecated, use default routes instead.": }
   }
   if $gateway6 != undef {
-      notify {"puppet-netplan wifi ${name}: gateway6 has been deprecated, use default routes instead.": }
+      notify {"puppet-netplan dummy_device ${name}: gateway6 has been deprecated, use default routes instead.": }
   }
 
-  $wifistmp = epp("${module_name}/wifis.epp", {
+  $dummy_devicestmp = epp("${module_name}/dummy_devices.epp", {
       'name'                           => $name,
-      'match'                          => $match,
-      'set_name'                       => $set_name,
-      'wakeonlan'                      => $wakeonlan,
-      'emit_lldp'                      => $emit_lldp,
-      'receive_checksum_offload'       => $receive_checksum_offload,
-      'transmit_checksum_offload'      => $transmit_checksum_offload,
-      'tcp_segmentation_offload'       => $tcp_segmentation_offload,
-      'tcp6_segmentation_offload'      => $tcp6_segmentation_offload,
-      'generic_segmentation_offload'   => $generic_segmentation_offload,
-      'generic_receive_offload'        => $generic_receive_offload,
-      'large_receive_offload'          => $large_receive_offload,
-      'openvswitch'                    => $openvswitch,
       'renderer'                       => $renderer,
       'dhcp4'                          => $_dhcp4,
       'dhcp6'                          => $_dhcp6,
@@ -481,15 +299,11 @@ define netplan::wifis (
       'routes'                         => $routes,
       'routing_policy'                 => $routing_policy,
       'neigh_suppress'                 => $neigh_suppress,
-      'access_points'                  => $access_points,
-      'wakeonwlan'                     => $wakeonwlan,
-      'regulatory_domain'              => $regulatory_domain,
   })
 
   concat::fragment { $name:
     target  => $netplan::config_file,
-    content => $wifistmp,
-    order   => '31',
+    content => $dummy_devicestmp,
+    order   => '71',
   }
-
 }

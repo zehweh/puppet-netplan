@@ -5,7 +5,7 @@
 1. [Description](#description)
 1. [Requirements](#requirements)
 1. [Usage](#usage)
-1. [Limitations - OS compatibility](#limitations)
+1. [Open vSwitch](#open-vswitch)
 1. [Miscellaneous](#miscellaneous)
 
 ## Description
@@ -23,12 +23,12 @@ The netplan module manages and applies netplan configuration.
 
 ### Example with include / Hiera
 
-puppet code:
+To use the module with Hiera, you can include the netplan class in your Puppet code:
 ```
 include netplan
 ```
 
-Hiera yaml:
+Then, define the netplan configuration in your Hiera YAML file:
 ```
 netplan::version: 2
 netplan::renderer: networkd
@@ -49,6 +49,7 @@ netplan::ethernets:
 
 ### Example using class
 
+Alternatively, you can use the netplan class directly in your Puppet code:
 ```
   class { 'netplan':
     config_file   => '/etc/netplan/01-custom.yaml',
@@ -67,16 +68,33 @@ netplan::ethernets:
   }
 ```
 
+## Open vSwitch
 
+The `external_ids` and `other_config` settings in the openvswitch property allow you to pass arbitrary configurations directly to Open vSwitch. To achieve this, you must use the configuration as a string and pay attention to proper indentation.
 
+### Example:
 
+Suppose you want to configure Open vSwitch as follows:
+```
+    ens13:
+      openvswitch:
+        external-ids:
+          iface-id: mylocaliface
+        other-config:
+          disable-in-band: false
+```
 
-
-## Limitations
-
-This module was only tested on Ubuntu 18.04.
-
+To pass this configuration as a string in your Hiera file, follow this format:
+``` 
+    ens13:
+      openvswitch:
+        external_ids: |-1
+                   iface-id: mylocaliface
+        other_config: |-1
+                   disable-in-band: false
+```
+Ensure that you maintain the correct indentation while providing the configuration as a string to ensure proper parsing by netplan.
 
 ## Miscellaneous
 
-The documentation of all parameters originates from the [Netplan Documentation](https://netplan.io/reference)
+For detailed information about each parameter, refer to the [Netplan Documentation](https://netplan.io/reference). The documentation for this module is based on the Netplan official reference.

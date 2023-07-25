@@ -1,4 +1,4 @@
-# @summary validates wifi config and writes it to $config_file via concat
+# @summary validates modem config and writes it to $config_file via concat
 #
 # @api private
 #
@@ -231,49 +231,38 @@
 #  Takes a boolean. Configures whether ARP and ND neighbor suppression is enabled for this port. When unset, the 
 #  kernel’s default will be used.
 #
-# Properties for device type wifis
+# Properties for device type modems
 #
-# @param access-points
-#  This provides pre-configured connections to NetworkManager. Note that users can of course select other
-#  access points/SSIDs. The keys of the mapping are the SSIDs, and the values are mappings with the following
-#  supported properties:
-#  password: Enable WPA2 authentication and set the passphrase for it. If not given, the network is
-#    assumed to be open. Other authentication modes are not currently supported.
-#  mode: Possible access point modes are infrastructure (the default), ap (create an access point to which
-#    other devices can connect), and adhoc (peer to peer networks without a central access point).
-#    ap is only supported with NetworkManager.
-#  bssid: If specified, directs the device to only associate with the given access point.
-#  band: ossible bands are 5GHz (for 5GHz 802.11a) and 2.4GHz (for 2.4GHz 802.11), do not restrict the 802.11 
-#    frequency band of the network if unset (the default).
-#  channel: Wireless channel to use for the Wi-Fi connection. Because channel numbers overlap between bands, 
-#    this property takes effect only if the band property is also set.
-#  hidden: Set to true to change the SSID scan technique for connecting to hidden WiFi networks. Note this may 
-#    have slower performance compared to false (the default) when connecting to publicly broadcast SSIDs.
-#  auth:
-#    key_management: he supported key management modes are none (no key management); psk (WPA with
-#      pre-shared key, common for home wifi); eap (WPA with EAP, common for enterprise wifi);
-#      and 802.1x (used primarily for wired Ethernet connections).
-#    password: The password string for EAP, or the pre-shared key for WPA-PSK.
-#    method: The EAP method to use. The supported EAP methods are tls (TLS), peap (Protected EAP),
-#      and ttls (Tunneled TLS).
-#    identity: The identity to use for EAP.
-#    anonymous_identity: The identity to pass over the unencrypted channel if the chosen EAP method
-#      supports passing a different tunnelled identity.
-#    ca_certificate: Path to a file with one or more trusted certificate authority (CA) certificates.
-#    client_certificate: Path to a file containing the certificate to be used by the client during authentication.
-#    client_key: Path to a file containing the private key corresponding to client-certificate.
-#    client_key_password: Password to use to decrypt the private key specified in client-key if it is encrypted.
-#    phase2_auth: Phase 2 authentication mechanism.
-# @param wakeonwlan
-#  This enables WakeOnWLan on supported devices. Not all drivers support all options. May be any combination of 
-#  any, disconnect, magic_pkt, gtk_rekey_failure, eap_identity_req, four_way_handshake, rfkill_release or tcp 
-#  (NetworkManager only). Or the exclusive default flag (the default).
-# @param regulatory_domain
-#  This can be used to define the radio’s regulatory domain, to make use of additional WiFi channels outside the 
-#  “world domain”. Takes an ISO / IEC 3166 country code (like GB) or 00 to reset to the “world domain”. See 
-#  wireless-regdb for available values.
+# @param apn
+#  Set the carrier APN (Access Point Name). This can be omitted if auto-config is enabled.
+# @param auto_config
+#  Specify whether to try and auto-configure the modem by doing a lookup of the carrier against 
+#  the Mobile Broadband Provider database. This may not work for all carriers.
+# @param device_id
+#  Specify the device ID (as given by the WWAN management service) of the modem to match. 
+#  This can be found using mmcli.
+# @param network_id
+#  Specify the Network ID (GSM LAI format). If this is specified, the device will not roam networks.
+# @param number
+#  The number to dial to establish the connection to the mobile broadband network. (Deprecated for GSM)
+# @param password
+#  Specify the password used to authenticate with the carrier network. 
+#  This can be omitted if auto-config is enabled.
+# @param pin
+#  Specify the SIM PIN to allow it to operate if a PIN is set.
+# @param sim_id
+#  Specify the SIM unique identifier (as given by the WWAN management service) which this connection 
+#  applies to. If given, the connection will apply to any device also allowed by device-id which contains 
+#  a SIM card matching the given identifier.
+# @param sim_operator_id
+#  Specify the MCC/MNC string (such as “310260” or “21601”) which identifies the carrier that this connection 
+#  should apply to. If given, the connection will apply to any device also allowed by device-id and sim-id 
+#  which contains a SIM card provisioned by the given operator.
+# @param username
+#  Specify the username used to authenticate with the carrier network. This can be omitted if auto-config 
+#  is enabled.
 #
-define netplan::wifis (
+define netplan::modems (
 
   # Properties for physical device types
   Optional[Struct[{
@@ -312,7 +301,7 @@ define netplan::wifis (
   }]]                                                             $openvswitch = undef,
 
   # Properties for all device types
-  Optional[Enum['networkd', 'NetworkManager']]                    $renderer = undef,
+  Optional[Enum['NetworkManager']]                                $renderer = undef,
   #lint:ignore:quoted_booleans
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp4 = undef,
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp6 = undef,
@@ -392,32 +381,19 @@ define netplan::wifis (
   }]]]                                                            $routing_policy = undef,
   Optional[Boolean]                                               $neigh_suppress = undef,
 
-  # Properties for device type wifis
-  Optional[Hash[String, Struct[{
-    Optional['password']        => String,
-    Optional['mode']            => Enum['infrastructure', 'ap', 'adhoc'],
-    Optional['bssid']           => String,
-    Optional['band']            => Enum['5GHz', '2.4GHz'],
-    Optional['channel']         => Integer,
-    Optional['hidden']          => Boolean,
-    Optional['auth']            => Struct[{
-      Optional['key_management']      => Enum['none', 'psk', 'eap', '802.1x'],
-      Optional['password']            => String,
-      Optional['method']              => Enum['tls', 'peap', 'ttls'],
-      Optional['identity']            => String,
-      Optional['anonymous_identity']  => String,
-      Optional['ca_certificate']      => String,
-      Optional['client_certificate']  => String,
-      Optional['client_key']          => String,
-      Optional['client_key_password'] => String,
-      Optional['phase2_auth']         => String,
-    }]
-  }]]]                                                            $access_points = undef,
-  Optional[Array[Enum['any', 'disconnect']]]                      $wakeonwlan = undef,
-  Optional[String]                                                $regulatory_domain = undef,
+  # Properties for device type modems
+  Optional[String]                                                $apn = undef,
+  Optional[Boolean]                                               $auto_config = undef,
+  Optional[String]                                                $device_id = undef,
+  Optional[Integer]                                               $network_id = undef,
+  Optional[String]                                                $number = undef,
+  Optional[String]                                                $password = undef,
+  Optional[Integer]                                               $pin = undef,
+  Optional[String]                                                $sim_id = undef,
+  Optional[Integer]                                               $sim_operator_id = undef,
+  Optional[String]                                                $username = undef,
 
-  ){
-
+) {
   $_dhcp4 = $dhcp4 ? {
     true    => true,
     'yes'   => true,
@@ -436,13 +412,13 @@ define netplan::wifis (
 
   # show deprecation infos for gateway4 & gateway6
   if $gateway4 != undef {
-      notify {"puppet-netplan wifi ${name}: gateway4 has been deprecated, use default routes instead.": }
+      notify {"puppet-netplan modems ${name}: gateway4 has been deprecated, use default routes instead.": }
   }
   if $gateway6 != undef {
-      notify {"puppet-netplan wifi ${name}: gateway6 has been deprecated, use default routes instead.": }
+      notify {"puppet-netplan modems ${name}: gateway6 has been deprecated, use default routes instead.": }
   }
 
-  $wifistmp = epp("${module_name}/wifis.epp", {
+  $modemstmp = epp("${module_name}/modems.epp", {
       'name'                           => $name,
       'match'                          => $match,
       'set_name'                       => $set_name,
@@ -481,15 +457,21 @@ define netplan::wifis (
       'routes'                         => $routes,
       'routing_policy'                 => $routing_policy,
       'neigh_suppress'                 => $neigh_suppress,
-      'access_points'                  => $access_points,
-      'wakeonwlan'                     => $wakeonwlan,
-      'regulatory_domain'              => $regulatory_domain,
+      'apn'                            => $apn,
+      'auto_config'                    => $auto_config,
+      'device_id'                      => $device_id,
+      'network_id'                     => $network_id,
+      'number'                         => $number,
+      'password'                       => $password,
+      'pin'                            => $pin,
+      'sim_id'                         => $sim_id,
+      'sim_operator_id'                => $sim_operator_id,
+      'username'                       => $username,
   })
 
   concat::fragment { $name:
     target  => $netplan::config_file,
-    content => $wifistmp,
-    order   => '31',
+    content => $modemstmp,
+    order   => '81',
   }
-
 }

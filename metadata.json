@@ -1,6 +1,6 @@
 {
   "name": "zehweh-netplan",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "author": "zehweh",
   "summary": "Manages and applies netplan configuration",
   "license": "Apache-2.0",
@@ -10,11 +10,11 @@
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.25.1 < 9.0.0"
+      "version_requirement": ">= 4.25.1 < 9.2.0"
     },
     {
       "name": "puppetlabs/concat",
-      "version_requirement": ">= 1.2.5 < 9.0.0"
+      "version_requirement": ">= 1.2.5 < 9.2.0"
     }
   ],
   "operatingsystem_support": [
@@ -29,7 +29,9 @@
         "20.10",
         "21.04",
         "21.10",
-        "22.04"
+        "22.04",
+        "22.10",
+        "23.04"
       ]
     }
   ],
@@ -40,7 +42,7 @@
     }
   ],
   "description": "Netplan Module for Ubuntu > 18.04.",
-  "pdk-version": "2.3.0",
+  "pdk-version": "2.7.1",
   "template-url": "pdk-default#2.3.0",
   "template-ref": "tags/2.3.0-0-g8aaceff"
 }

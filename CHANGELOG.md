@@ -1,5 +1,18 @@
 # Changelog
 
+## Release 2.0.0
+
+#### Added
+- all properties that are available in the latest netplan version 0.106.1
+- device types: modem, vrf, dummy_device 
+
+#### Changed
+- BREAKING CHANGE: device type tunnel: `keys` is now an alias for `key`
+- BREAKING CHANGE: device type bonds: 
+  `all-slaves-active` has been renamed to `all-members-active`,
+  `packets-per-slave` has been renamed to `packets-per-member`
+- show deprecation info for `gateway4` and `gateway6`
+
 ## Release 1.0.1
 
 #### Added

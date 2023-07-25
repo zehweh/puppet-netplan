@@ -1,0 +1,87 @@
+<%- |
+  String                                                          $name,
+
+  # Properties for device type vrfs
+  Optional[Integer]                                               $table = undef,
+  Optional[Array[String[1]]]                                      $interfaces = undef,
+  Optional[Array[Struct[{
+          Optional['from']                      => Stdlib::IP::Address,
+          'to'                                  => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
+          Optional['via']                       => Stdlib::IP::Address::Nosubnet,
+          Optional['on_link']                   => Boolean,
+          Optional['metric']                    => Integer,
+          Optional['type']                      => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
+          Optional['scope']                     => Enum['global', 'link', 'host'],
+          Optional['table']                     => Integer,
+          Optional['mtu']                       => Integer,
+          Optional['congestion_window']         => Integer,
+          Optional['advertised_receive_window'] => Integer,
+  }]]]                                                            $routes = undef,
+  Optional[Array[Struct[{
+          'from'                      => Stdlib::IP::Address,
+          Optional['to']              => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
+          Optional['table']           => Integer,
+          Optional['priority']        => Integer,
+          Optional['mark']            => Integer,
+          Optional['type_of_service'] => Integer,
+  }]]]                                                            $routing_policy = undef,
+
+| -%>
+    <%= $name %>:
+<%# Properties for device type vrfs -%>
+      table: <%= $table %>
+      interfaces:
+      <%- $interfaces.each | $interface | { -%>
+        - <%= $interface %>
+      <%- } -%>
+    <%- if $routes != undef { -%>
+      routes:
+      <%- $routes.each |$route| { -%>
+        - to: <%= $route[to] %>
+          <%- if $route[via] != undef { -%>
+          via: <%= $route[via] %>
+          <%- } -%>
+          <%- if $route[from] != undef { -%>
+          from: <%= $route[from] %>
+          <%- } -%>
+          <%- if $route[on_link] != undef { -%>
+          on-link: <%= $route[on_link] %>
+          <%- } -%>
+          <%- if $route[metric] != undef { -%>
+          metric: <%= $route[metric] %>
+          <%- } -%>
+          <%- if $route['type'] != undef { -%>
+          type: <%= $route['type'] %>
+          <%- } -%>
+          <%- if $route[scope] != undef { -%>
+          scope: <%= $route[scope] %>
+          <%- } -%>
+          <%- if $route[table] != undef { -%>
+          table: <%= $route[table] %>
+          <%- } -%>
+          <%- if $route[mtu] != undef { -%>
+          mtu: <%= $route[mtu] %>
+          <%- } -%>
+          <%- if $route[congestion_window] != undef { -%>
+          congestion-window: <%= $route[congestion_window] %>
+          <%- } -%>
+          <%- if $route[advertised_receive_window] != undef { -%>
+          advertised-receive-window: <%= $route[advertised_receive_window] %>
+          <%- } -%>
+      <%- } -%>
+    <%- } -%>
+    <%- if $routing_policy != undef { -%>
+      routing-policy:
+      <%- $routing_policy.each |$policy| { -%>
+        - from: <%= $policy[from] %>
+          <%- if $policy[to] != undef { -%>
+          to: <%= $policy[to] %>
+          <%- } -%>
+          <%- if $policy[table] != undef { -%>
+          table: <%= $policy[table] %>
+          <%- } -%>
+          <%- if $policy[priority] != undef { -%>
+          priority: <%= $policy[priority] %>
+          <%- } -%>
+      <%- } -%>
+    <%- } -%>

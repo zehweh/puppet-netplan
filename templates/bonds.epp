@@ -1,73 +1,88 @@
 <%- |
   String                                                          $name,
 
-  # common properties
+  # Properties for all device types
   Optional[Enum['networkd', 'NetworkManager']]                    $renderer = undef,
   #lint:ignore:quoted_booleans
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp4 = undef,
   Optional[Variant[Enum['true', 'false', 'yes', 'no'], Boolean]]  $dhcp6 = undef,
   #lint:endignore
+  Optional[Integer]                                               $ipv6_mtu = undef,
   Optional[Boolean]                                               $ipv6_privacy = undef,
   Optional[Tuple[Enum['ipv4', 'ipv6'], 0]]                        $link_local = undef,
+  Optional[Boolean]                                               $ignore_carrier = undef,
   Optional[Boolean]                                               $critical = undef,
   Optional[Enum['mac']]                                           $dhcp_identifier = undef,
   Optional[Struct[{
-    Optional['use_dns']         => Boolean,
-    Optional['use_ntp']         => Boolean,
-    Optional['send_hostname']   => Boolean,
-    Optional['use_hostname']    => Boolean,
-    Optional['use_mtu']         => Boolean,
-    Optional['hostname']        => Stdlib::Fqdn,
-    Optional['use_routes']      => Boolean,
-    Optional['route_metric']    => Integer,
-    Optional['use_domains']     => Variant[Enum['route', 'true', 'false', 'yes', 'no'], Boolean],
+        Optional['use_dns']         => Boolean,
+        Optional['use_ntp']         => Boolean,
+        Optional['send_hostname']   => Boolean,
+        Optional['use_hostname']    => Boolean,
+        Optional['use_mtu']         => Boolean,
+        Optional['hostname']        => Stdlib::Fqdn,
+        Optional['use_routes']      => Boolean,
+        Optional['route_metric']    => Integer,
+        Optional['use_domains']     => Variant[Enum['route', 'true', 'false', 'yes', 'no'], Boolean],
   }]]                                                             $dhcp4_overrides = undef,
   Optional[Struct[{
-    Optional['use_dns']         => Boolean,
-    Optional['use_ntp']         => Boolean,
-    Optional['send_hostname']   => Boolean,
-    Optional['use_hostname']    => Boolean,
-    Optional['use_mtu']         => Boolean,
-    Optional['hostname']        => Stdlib::Fqdn,
-    Optional['use_routes']      => Boolean,
-    Optional['route_metric']    => Integer,
-    Optional['use_domains']     => Variant[Enum['route', 'true', 'false', 'yes', 'no'], Boolean],
+        Optional['use_dns']         => Boolean,
+        Optional['use_ntp']         => Boolean,
+        Optional['send_hostname']   => Boolean,
+        Optional['use_hostname']    => Boolean,
+        Optional['use_mtu']         => Boolean,
+        Optional['hostname']        => Stdlib::Fqdn,
+        Optional['use_routes']      => Boolean,
+        Optional['route_metric']    => Integer,
+        Optional['use_domains']     => Variant[Enum['route', 'true', 'false', 'yes', 'no'], Boolean],
   }]]                                                             $dhcp6_overrides = undef,
   Optional[Boolean]                                               $accept_ra = undef,
-  Optional[Array[Stdlib::IP::Address]]                            $addresses = undef,
+  Optional[Array[Variant[
+      Stdlib::IP::Address,
+      Hash[
+            Stdlib::IP::Address,
+            Struct[{
+                  Optional['lifetime'] => Variant[Enum['forever'], Integer[0,0]],
+                  Optional['label']    => String[1]
+            }]
+      ]
+  ]]]                                                             $addresses = undef,
+  Optional[Enum['eui64', 'stable-privacy']]                       $ipv6_address_generation = undef,
+  Optional[String]                                                $ipv6_address_token = undef,
   Optional[Stdlib::IP::Address::V4::Nosubnet]                     $gateway4 = undef,
   Optional[Stdlib::IP::Address::V6::Nosubnet]                     $gateway6 = undef,
   Optional[Struct[{
-    Optional['search']          => Array[Stdlib::Fqdn],
-    'addresses'                 => Array[Stdlib::IP::Address]
+        Optional['search']          => Array[Stdlib::Fqdn],
+        'addresses'                 => Array[Stdlib::IP::Address]
   }]]                                                             $nameservers = undef,
   Optional[Stdlib::MAC]                                           $macaddress = undef,
   Optional[Integer]                                               $mtu = undef,
   Optional[Boolean]                                               $optional = undef,
   Optional[Array[String]]                                         $optional_addresses = undef,
+  Optional[Enum['manual', 'off']]                                 $activation_mode = undef,
   Optional[Array[Struct[{
-    Optional['from']                      => Stdlib::IP::Address,
-    'to'                                  => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
-    Optional['via']                       => Stdlib::IP::Address::Nosubnet,
-    Optional['on_link']                   => Boolean,
-    Optional['metric']                    => Integer,
-    Optional['type']                      => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
-    Optional['scope']                     => Enum['global', 'link', 'host'],
-    Optional['table']                     => Integer,
-    Optional['mtu']                       => Integer,
-    Optional['congestion_window']         => Integer,
-    Optional['advertised_receive_window'] => Integer,
+          Optional['from']                      => Stdlib::IP::Address,
+          'to'                                  => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
+          Optional['via']                       => Stdlib::IP::Address::Nosubnet,
+          Optional['on_link']                   => Boolean,
+          Optional['metric']                    => Integer,
+          Optional['type']                      => Enum['unicast', 'unreachable', 'blackhole', 'prohibited'],
+          Optional['scope']                     => Enum['global', 'link', 'host'],
+          Optional['table']                     => Integer,
+          Optional['mtu']                       => Integer,
+          Optional['congestion_window']         => Integer,
+          Optional['advertised_receive_window'] => Integer,
   }]]]                                                            $routes = undef,
   Optional[Array[Struct[{
-    'from'                      => Stdlib::IP::Address,
-    'to'                        => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
-    Optional['table']           => Integer,
-    Optional['priority']        => Integer,
-    Optional['mark']            => Integer,
-    Optional['type_of_service'] => Integer,
+          'from'                      => Stdlib::IP::Address,
+          'to'                        => Variant[Stdlib::IP::Address, Enum['default', '0.0.0.0/0', '::/0']],
+          Optional['table']           => Integer,
+          Optional['priority']        => Integer,
+          Optional['mark']            => Integer,
+          Optional['type_of_service'] => Integer,
   }]]]                                                            $routing_policy = undef,
+  Optional[Boolean]                                               $neigh_suppress = undef,
 
-  # bonds specific properties
+  # Properties for device type bonds
   Array[String]                                                   $interfaces = undef,
   Optional[Struct[{
     Optional['mode']                    => Enum['balance-rr', 'active-backup', 'balance-xor',
@@ -77,7 +92,7 @@
     Optional['min_links']               => Integer,
     Optional['transmit_hash_policy']    => Enum['layer2', 'layer3+4', 'layer2+3', 'encap2+3', 'encap3+4'],
     Optional['ad_select']               => Enum['stable', 'bandwidth', 'count'],
-    Optional['all_slaves_active']       => Boolean,
+    Optional['all_members_active']      => Boolean,
     Optional['arp_interval']            => Integer,
     Optional['arp_ip_targets']          => Array[Stdlib::IP::Address::V4::Nosubnet],
     Optional['arp_validate']            => Enum['none', 'active', 'backup', 'all'],
@@ -86,7 +101,7 @@
     Optional['down_delay']              => Variant[Float, Integer],
     Optional['fail_over_mac_policy']    => Enum['none', 'active', 'follow'],
     Optional['gratuitious_arp']         => Integer,
-    Optional['packets_per_slave']       => Integer,
+    Optional['packets_per_member']      => Integer,
     Optional['primary_reselect_policy'] => Enum['always', 'better', 'failure'],
     Optional['resend_igmp']             => Integer,
     Optional['learn_packet_interval']   => String,
@@ -95,243 +110,273 @@
 
 | -%>
     <%= $name %>:
-    <%# common properties -%>
-    <%- if $renderer { -%>
+    <%# Properties for all device types -%>
+    <%- if $renderer != undef { -%>
       renderer: <%= $renderer %>
     <%- } -%>
-    <%- unless $dhcp4 =~ Undef { -%>
+    <%- if $dhcp4 != undef { -%>
       dhcp4: <%= $dhcp4 %>
     <%- } -%>
-    <%- unless $dhcp6 =~ Undef { -%>
+    <%- if $dhcp6 != undef { -%>
       dhcp6: <%= $dhcp6 %>
     <%- } -%>
-    <%- unless $ipv6_privacy =~ Undef { -%>
+    <%- if $ipv6_mtu != undef { -%>
+      ipv6-mtu: <%= $ipv6_mtu %>
+    <%- } -%>
+    <%- if $ipv6_privacy != undef { -%>
       ipv6-privacy: <%= $ipv6_privacy %>
     <%- } -%>
-    <%- if $link_local { -%>
+    <%- if $link_local != undef { -%>
       link-local: <%= $link_local %>
     <%- } -%>
-    <%- unless $critical =~ Undef { -%>
+    <%- if $ignore_carrier != undef { -%>
+      ignore-carrier: <%= $ignore_carrier %>
+    <%- } -%>
+    <%- if $critical != undef { -%>
       critical: <%= $critical %>
     <%- } -%>
-    <%- if $dhcp_identifier { -%>
+    <%- if $dhcp_identifier != undef { -%>
       dhcp-identifier: <%= $dhcp_identifier %>
     <%- } -%>
-    <%- if $dhcp4_overrides { -%>
+    <%- if $dhcp4_overrides != undef { -%>
       dhcp4-overrides:
-        <%- unless $dhcp4_overrides[use_dns] =~ Undef { -%>
+        <%- if $dhcp4_overrides[use_dns] != undef { -%>
         use-dns: <%= $dhcp4_overrides[use_dns] %>
         <%- } -%>
-        <%- unless $dhcp4_overrides[use_ntp] =~ Undef { -%>
+        <%- if $dhcp4_overrides[use_ntp] != undef { -%>
         use-ntp: <%= $dhcp4_overrides[use_ntp] %>
         <%- } -%>
-        <%- unless $dhcp4_overrides[send_hostname] =~ Undef { -%>
+        <%- if $dhcp4_overrides[send_hostname] != undef { -%>
         send-hostname: <%= $dhcp4_overrides[send_hostname] %>
         <%- } -%>
-        <%- unless $dhcp4_overrides[use_hostname] =~ Undef { -%>
+        <%- if $dhcp4_overrides[use_hostname] != undef { -%>
         use-hostname: <%= $dhcp4_overrides[use_hostname] %>
         <%- } -%>
-        <%- unless $dhcp4_overrides[use_mtu] =~ Undef { -%>
+        <%- if $dhcp4_overrides[use_mtu] != undef { -%>
         use-mtu: <%= $dhcp4_overrides[use_mtu] %>
         <%- } -%>
-        <%- if $dhcp4_overrides[hostname] { -%>
+        <%- if $dhcp4_overrides[hostname] != undef { -%>
         hostname: <%= $dhcp4_overrides[hostname] %>
         <%- } -%>
-        <%- unless $dhcp4_overrides[use_routes] =~ Undef { -%>
+        <%- if $dhcp4_overrides[use_routes] != undef { -%>
         use-routes: <%= $dhcp4_overrides[use_routes] %>
         <%- } -%>
-        <%- if $dhcp4_overrides[route_metric] { -%>
+        <%- if $dhcp4_overrides[route_metric] != undef { -%>
         route-metric: <%= $dhcp4_overrides[route_metric] %>
         <%- } -%>
-        <%- if $dhcp4_overrides[use_domains] { -%>
+        <%- if $dhcp4_overrides[use_domains] != undef { -%>
         use-domains: <%= $dhcp4_overrides[use_domains] %>
         <%- } -%>
     <%- } -%>
-    <%- if $dhcp6_overrides { -%>
+    <%- if $dhcp6_overrides != undef { -%>
       dhcp6-overrides:
-        <%- unless $dhcp6_overrides[use_dns] =~ Undef { -%>
+        <%- if $dhcp6_overrides[use_dns] != undef { -%>
         use-dns: <%= $dhcp6_overrides[use_dns] %>
         <%- } -%>
-        <%- unless $dhcp6_overrides[use_ntp] =~ Undef { -%>
+        <%- if $dhcp6_overrides[use_ntp] != undef { -%>
         use-ntp: <%= $dhcp6_overrides[use_ntp] %>
         <%- } -%>
-        <%- unless $dhcp6_overrides[send_hostname] =~ Undef { -%>
+        <%- if $dhcp6_overrides[send_hostname] != undef { -%>
         send-hostname: <%= $dhcp6_overrides[send_hostname] %>
         <%- } -%>
-        <%- unless $dhcp6_overrides[use_hostname] =~ Undef { -%>
+        <%- if $dhcp6_overrides[use_hostname] != undef { -%>
         use-hostname: <%= $dhcp6_overrides[use_hostname] %>
         <%- } -%>
-        <%- unless $dhcp6_overrides[use_mtu] =~ Undef { -%>
+        <%- if $dhcp6_overrides[use_mtu] != undef { -%>
         use-mtu: <%= $dhcp6_overrides[use_mtu] %>
         <%- } -%>
-        <%- if $dhcp6_overrides[hostname] { -%>
+        <%- if $dhcp6_overrides[hostname] != undef { -%>
         hostname: <%= $dhcp6_overrides[hostname] %>
         <%- } -%>
-        <%- unless $dhcp6_overrides[use_routes] =~ Undef { -%>
+        <%- if $dhcp6_overrides[use_routes] != undef { -%>
         use-routes: <%= $dhcp6_overrides[use_routes] %>
         <%- } -%>
-        <%- if $dhcp6_overrides[route_metric] { -%>
+        <%- if $dhcp6_overrides[route_metric] != undef { -%>
         route-metric: <%= $dhcp6_overrides[route_metric] %>
         <%- } -%>
-        <%- if $dhcp6_overrides[use_domains] { -%>
+        <%- if $dhcp6_overrides[use_domains] != undef { -%>
         use-domains: <%= $dhcp6_overrides[use_domains] %>
         <%- } -%>
     <%- } -%>
-    <%- unless $accept_ra =~ Undef { -%>
+    <%- if $accept_ra != undef { -%>
       accept-ra: <%= $accept_ra %>
     <%- } -%>
-    <%- if $addresses { -%>
+    <%- if $addresses != undef { -%>
       addresses:
-      <%- $addresses.each |$address| { -%>
+      <%- $addresses.each | $address | { -%>
+        <%- if $address.is_a(Hash) { -%>
+          <%- $address.each | $add, $option | { -%>
+        - <%= $add %>:
+            <%- if $option['lifetime'] != undef { -%>
+            lifetime: <%= $option['lifetime'] %>
+            <%- } -%> 
+            <%- if $option['label'] != undef { -%>
+            label: <%= $option['label'] %>
+            <%- } -%>          
+          <%- } -%>
+        <%- } else { -%>
         - <%= $address %>
+        <%- } -%>
       <%- } -%>
     <%- } -%>
-    <%- if $gateway4 { -%>
+    <%- if $ipv6_address_generation != undef { -%>
+      ipv6-address-generation: <%= $ipv6_address_generation %>
+    <%- } -%>
+    <%- if $ipv6_address_token != undef { -%>
+      ipv6-address-token: <%= $ipv6_address_token %>
+    <%- } -%>
+    <%- if $gateway4 != undef { -%>
       gateway4: <%= $gateway4 %>
     <%- } -%>
-    <%- if $gateway6 { -%>
+    <%- if $gateway6 != undef { -%>
       gateway6: <%= $gateway6 %>
     <%- } -%>
-    <%- if $nameservers { -%>
+    <%- if $nameservers != undef { -%>
       nameservers:
-      <%- if $nameservers[search] { -%>
+      <%- if $nameservers[search] != undef { -%>
         search: <%= $nameservers[search] %>
       <%- } -%>
-      <%- if $nameservers[addresses] { -%>
+      <%- if $nameservers[addresses] != undef { -%>
         addresses:
       <%- $nameservers[addresses].each |$address| { -%>
           - <%= $address %>
       <%- } -%>
       <%- } -%>
     <%- } -%>
-    <%- if $macaddress { -%>
+    <%- if $macaddress != undef { -%>
       macaddress: <%= $macaddress %>
     <%- } -%>
-    <%- if $mtu { -%>
+    <%- if $mtu != undef { -%>
       mtu: <%= $mtu %>
     <%- } -%>
-    <%- if $optional { -%>
+    <%- if $optional != undef { -%>
       optional: <%= $optional %>
     <%- } -%>
-    <%- if $optional_addresses { -%>
+    <%- if $optional_addresses != undef { -%>
       optional-addresses:
       <%- $optional_addresses.each |$optional_address| { -%>
         - <%= $optional_address %>
       <%- } -%>
     <%- } -%>
-    <%- if $routes { -%>
+    <%- if $activation_mode != undef { -%>
+      activation-mode: <%= $activation_mode %>
+    <%- } -%>
+    <%- if $routes != undef { -%>
       routes:
       <%- $routes.each |$route| { -%>
         - to: <%= $route[to] %>
-          <%- if $route[via] { -%>
+          <%- if $route[via] != undef { -%>
           via: <%= $route[via] %>
           <%- } -%>
-          <%- if $route[from] { -%>
+          <%- if $route[from] != undef { -%>
           from: <%= $route[from] %>
           <%- } -%>
-          <%- unless $route[on_link] =~ Undef { -%>
+          <%- if $route[on_link] != undef { -%>
           on-link: <%= $route[on_link] %>
           <%- } -%>
-          <%- if $route[metric] { -%>
+          <%- if $route[metric] != undef { -%>
           metric: <%= $route[metric] %>
           <%- } -%>
-          <%- unless $route['type'] =~ Undef { -%>
+          <%- if $route['type'] != undef { -%>
           type: <%= $route['type'] %>
           <%- } -%>
-          <%- unless $route[scope] =~ Undef { -%>
+          <%- if $route[scope] != undef { -%>
           scope: <%= $route[scope] %>
           <%- } -%>
-          <%- if $route[table] { -%>
+          <%- if $route[table] != undef { -%>
           table: <%= $route[table] %>
           <%- } -%>
-          <%- if $route[mtu] { -%>
+          <%- if $route[mtu] != undef { -%>
           mtu: <%= $route[mtu] %>
           <%- } -%>
-          <%- if $route[congestion_window] { -%>
+          <%- if $route[congestion_window] != undef { -%>
           congestion-window: <%= $route[congestion_window] %>
           <%- } -%>
-          <%- if $route[advertised_receive_window] { -%>
+          <%- if $route[advertised_receive_window] != undef { -%>
           advertised-receive-window: <%= $route[advertised_receive_window] %>
           <%- } -%>
       <%- } -%>
     <%- } -%>
-    <%- if $routing_policy { -%>
+    <%- if $routing_policy != undef { -%>
       routing-policy:
       <%- $routing_policy.each |$policy| { -%>
         - to: <%= $policy[to] %>
           from: <%= $policy[from] %>
-          <%- if $policy[table] { -%>
+          <%- if $policy[table] != undef { -%>
           table: <%= $policy[table] %>
           <%- } -%>
-          <%- if $policy[priority] { -%>
+          <%- if $policy[priority] != undef { -%>
           priority: <%= $policy[priority] %>
           <%- } -%>
       <%- } -%>
     <%- } -%>
-    <%# bonds specific properties -%>
-    <%- if $interfaces { -%>
+    <%- if $neigh_suppress != undef { -%>
+      neigh-suppress: <%= $neigh_suppress %>
+    <%- } -%>
+    <%# Properties for device type bonds -%>
+    <%- if $interfaces != undef { -%>
       interfaces: <%= $interfaces %>
     <%- } -%>
-    <%- if $parameters { -%>
+    <%- if $parameters != undef { -%>
       parameters:
-        <%- if $parameters[mode] { -%>
+        <%- if $parameters[mode] != undef { -%>
         mode: <%= $parameters[mode] %>
         <%- } -%>
-        <%- if $parameters[lacp_rate] { -%>
+        <%- if $parameters[lacp_rate] != undef { -%>
         lacp-rate: <%= $parameters[lacp_rate] %>
         <%- } -%>
-        <%- if $parameters[mii_monitor_interval] { -%>
+        <%- if $parameters[mii_monitor_interval] != undef { -%>
         mii-monitor-interval: <%= $parameters[mii_monitor_interval] %>
         <%- } -%>
-        <%- if $parameters[min_links] { -%>
+        <%- if $parameters[min_links] != undef { -%>
         min-links: <%= $parameters[min_links] %>
         <%- } -%>
-        <%- if $parameters[transmit_hash_policy] { -%>
+        <%- if $parameters[transmit_hash_policy] != undef { -%>
         transmit-hash-policy: <%= $parameters[transmit_hash_policy] %>
         <%- } -%>
-        <%- if $parameters[ad_select] { -%>
+        <%- if $parameters[ad_select] != undef { -%>
         ad-select: <%= $parameters[ad_select] %>
         <%- } -%>
-        <%- unless $parameters[all_slaves_active] =~ Undef { -%>
-        all-slaves-active: <%= $parameters[all_slaves_active] %>
+        <%- if $parameters[all_members_active] != undef { -%>
+        all-members-active: <%= $parameters[all_members_active] %>
         <%- } -%>
-        <%- if $parameters[arp_interval] { -%>
+        <%- if $parameters[arp_interval] != undef { -%>
         arp-interval: <%= $parameters[arp_interval] %>
         <%- } -%>
-        <%- if $parameters[arp_ip_targets] { -%>
+        <%- if $parameters[arp_ip_targets] != undef { -%>
         arp-ip-targets: <%= $parameters[arp_ip_targets] %>
         <%- } -%>
-        <%- if $parameters[arp_validate] { -%>
+        <%- if $parameters[arp_validate] != undef { -%>
         arp-validate: <%= $parameters[arp_validate] %>
         <%- } -%>
-        <%- if $parameters[arp_all_targets] { -%>
+        <%- if $parameters[arp_all_targets] != undef { -%>
         arp-all-targets: <%= $parameters[arp_all_targets] %>
         <%- } -%>
-        <%- if $parameters[up_delay] { -%>
+        <%- if $parameters[up_delay] != undef { -%>
         up-delay: <%= $parameters[up_delay] %>
         <%- } -%>
-        <%- if $parameters[down_delay] { -%>
+        <%- if $parameters[down_delay] != undef { -%>
         down-delay: <%= $parameters[down_delay] %>
         <%- } -%>
-        <%- if $parameters[fail_over_mac_policy] { -%>
+        <%- if $parameters[fail_over_mac_policy] != undef { -%>
         fail-over-mac-policy: <%= $parameters[fail_over_mac_policy] %>
         <%- } -%>
-        <%- if $parameters[gratuitious_arp] { -%>
+        <%- if $parameters[gratuitious_arp] != undef { -%>
         gratuitious-arp: <%= $parameters[gratuitious_arp] %>
         <%- } -%>
-        <%- if $parameters[packets_per_slave] { -%>
-        packets-per-slave: <%= $parameters[packets_per_slave] %>
+        <%- if $parameters[packets_per_member] != undef { -%>
+        packets-per-member: <%= $parameters[packets_per_member] %>
         <%- } -%>
-        <%- if $parameters[primary_reselect_policy] { -%>
+        <%- if $parameters[primary_reselect_policy] != undef { -%>
         primary-reselect-policy: <%= $parameters[primary_reselect_policy] %>
         <%- } -%>
-        <%- if $parameters[resend_igmp] { -%>
+        <%- if $parameters[resend_igmp] != undef { -%>
         resend-igmp: <%= $parameters[resend_igmp] %>
         <%- } -%>
-        <%- if $parameters[learn_packet_interval] { -%>
+        <%- if $parameters[learn_packet_interval] != undef { -%>
         learn-packet-interval: <%= $parameters[learn_packet_interval] %>
         <%- } -%>
-        <%- if $parameters[primary] { -%>
+        <%- if $parameters[primary] != undef { -%>
         primary: <%= $parameters[primary] %>
         <%- } -%>
     <%- } -%>
