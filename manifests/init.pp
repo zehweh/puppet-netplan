@@ -68,10 +68,18 @@ class netplan (
     default => undef,
   }
 
+  $renderer_service = $renderer ? {
+    'networkd' => 'systemd-networkd',
+    default    => $renderer,
+  }
+
+  $test_command = "while ! /bin/systemctl status ${renderer_service}; do /bin/sleep 1; done"
+
   exec { 'netplan_apply':
-    command     => '/usr/sbin/netplan apply',
+    command     => "/usr/sbin/netplan apply && ${test_command}",
     logoutput   => 'on_failure',
     refreshonly => true,
+    provider    => 'shell',
   }
 
   concat { $netplan::config_file:
