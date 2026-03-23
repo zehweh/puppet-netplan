@@ -14,6 +14,7 @@ def location_for(place_or_version, fake_version = nil)
 end
 
 group :development do
+  gem 'metadata-json-lint',            require: false
   gem 'puppet-lint',                   require: false
   gem 'puppetlabs_spec_helper',        require: false
   gem 'rspec-puppet',                  require: false
