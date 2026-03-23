@@ -37,7 +37,7 @@ describe 'netplan::bridges' do
               'hello_time'    => 2,
               'max_age'       => 20,
               'ageing_time'   => 300,
-              'priority'      => 32768,
+              'priority'      => 32768, # rubocop:disable Style/NumericLiterals
             },
           }
         end

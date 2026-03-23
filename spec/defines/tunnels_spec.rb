@@ -34,7 +34,7 @@ describe 'netplan::tunnels' do
             mode: 'wireguard',
             key:  'aWd0cE0lKnRiNSNhNjRERCpRYWw0MnE0OCRJM04wSzY=',
             mark: 42,
-            port: 51820,
+            port: 51820, # rubocop:disable Style/NumericLiterals
             peers: [
               {
                 'keys' => {

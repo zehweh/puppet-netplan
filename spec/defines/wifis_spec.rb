@@ -43,8 +43,8 @@ describe 'netplan::wifis' do
       end
 
       context 'with all wakeonwlan values' do
-        %w[any disconnect magic_pkt gtk_rekey_failure eap_identity_req
-           four_way_handshake rfkill_release tcp default].each do |value|
+        ['any', 'disconnect', 'magic_pkt', 'gtk_rekey_failure', 'eap_identity_req',
+         'four_way_handshake', 'rfkill_release', 'tcp', 'default'].each do |value|
           context "wakeonwlan #{value}" do
             let(:params) do
               {
