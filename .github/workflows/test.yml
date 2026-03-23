@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        puppet: ['7', '8']
+        puppet: ['8']
     steps:
       - uses: actions/checkout@v4
       - name: Install PDK
