@@ -26,12 +26,11 @@ describe 'netplan::wifis' do
         let(:params) do
           {
             dhcp4:         true,
-            access_points: [
-              {
-                'ssid'     => 'MyNetwork',
+            access_points: {
+              'MyNetwork' => {
                 'password' => 'secret123',
               },
-            ],
+            },
           }
         end
 

@@ -63,15 +63,16 @@ class netplan (
     }
   }
 
-  $notify = $netplan_apply ? {
-    true    => Exec['netplan_apply'],
-    default => undef,
-  }
+  if $netplan_apply {
+    exec { 'netplan_apply':
+      command     => '/usr/sbin/netplan apply',
+      logoutput   => 'on_failure',
+      refreshonly => true,
+    }
 
-  exec { 'netplan_apply':
-    command     => '/usr/sbin/netplan apply',
-    logoutput   => 'on_failure',
-    refreshonly => true,
+    $notify = Exec['netplan_apply']
+  } else {
+    $notify = undef
   }
 
   concat { $netplan::config_file:

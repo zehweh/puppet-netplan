@@ -351,7 +351,7 @@ define netplan::tunnels (
   }]]]                                                            $peers = undef,
   # VXLAN specific keys
   Optional[Integer[1,16777215]]                                   $id = undef,
-  Optional[Integer]                                               $link = undef,
+  Optional[String]                                                $link = undef,
   Optional[Integer]                                               $type_of_service = undef,
   Optional[Boolean]                                               $mac_learning = undef,
   Optional[Integer]                                               $ageing = undef,
