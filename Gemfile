@@ -16,9 +16,13 @@ end
 group :development do
   gem 'metadata-json-lint',            require: false
   gem 'puppet-lint',                   require: false
+  gem 'puppet-syntax',                 require: false
   gem 'puppetlabs_spec_helper',        require: false
   gem 'rspec-puppet',                  require: false
   gem 'rspec-puppet-facts',            require: false
+  gem 'rubocop',                       require: false
+  gem 'rubocop-performance',           require: false
+  gem 'rubocop-rspec',                 require: false
   gem 'voxpupuli-puppet-lint-plugins', require: false
 end
 
