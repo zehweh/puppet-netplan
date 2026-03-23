@@ -187,10 +187,10 @@
         - <%= $add %>:
             <%- if $option['lifetime'] != undef { -%>
             lifetime: <%= $option['lifetime'] %>
-            <%- } -%> 
+            <%- } -%>
             <%- if $option['label'] != undef { -%>
             label: <%= $option['label'] %>
-            <%- } -%>          
+            <%- } -%>
           <%- } -%>
         <%- } else { -%>
         - <%= $address %>
@@ -212,7 +212,10 @@
     <%- if $nameservers != undef { -%>
       nameservers:
       <%- if $nameservers[search] != undef { -%>
-        search: <%= $nameservers[search] %>
+        search:
+      <%- $nameservers[search].each |$search| { -%>
+          - <%= $search %>
+      <%- } -%>
       <%- } -%>
       <%- if $nameservers[addresses] != undef { -%>
         addresses:

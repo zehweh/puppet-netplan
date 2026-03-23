@@ -224,10 +224,10 @@
         - <%= $add %>:
             <%- if $option['lifetime'] != undef { -%>
             lifetime: <%= $option['lifetime'] %>
-            <%- } -%> 
+            <%- } -%>
             <%- if $option['label'] != undef { -%>
             label: <%= $option['label'] %>
-            <%- } -%>          
+            <%- } -%>
           <%- } -%>
         <%- } else { -%>
         - <%= $address %>
@@ -249,7 +249,10 @@
     <%- if $nameservers != undef { -%>
       nameservers:
       <%- if $nameservers[search] != undef { -%>
-        search: <%= $nameservers[search] %>
+        search:
+      <%- $nameservers[search].each |$search| { -%>
+          - <%= $search %>
+      <%- } -%>
       <%- } -%>
       <%- if $nameservers[addresses] != undef { -%>
         addresses:
@@ -349,15 +352,15 @@
     <%- } -%>
     <%- if $key.is_a(Hash) { -%>
       key:
-      <%- if $key[input] != undef { -%>  
+      <%- if $key[input] != undef { -%>
         input: <%= $key[input] %>
       <%- } -%>
-      <%- if $key[output] != undef { -%>  
+      <%- if $key[output] != undef { -%>
         output: <%= $key[output] %>
       <%- } -%>
-      <%- if $key['private'] != undef { -%>  
+      <%- if $key['private'] != undef { -%>
         private: <%= $key['private'] %>
-      <%- } -%>  
+      <%- } -%>
     <%- } -%>
     <%- elsif $key.is_a(Scalar) { -%>
       key: <%= $key %>
@@ -373,19 +376,19 @@
         <%- $peers.each |$peer| { -%>
         - keys:
             public: <%= $peer[keys][public] %>
-            <%- if $peer[keys][shared] != undef { -%>  
+            <%- if $peer[keys][shared] != undef { -%>
             shared: <%= $peer[keys][shared] %>
             <%- } -%>
-          <%- if $peer[endpoint] != undef { -%>  
+          <%- if $peer[endpoint] != undef { -%>
           endpoint: <%= $peer[endpoint] %>
           <%- } -%>
-          <%- if $peer[allowed_ips] != undef { -%>  
+          <%- if $peer[allowed_ips] != undef { -%>
           allowed-ips: <%= $peer[allowed_ips] %>
           <%- } -%>
-          <%- if $peer[keepalive] != undef { -%>  
+          <%- if $peer[keepalive] != undef { -%>
           keepalive: <%= $peer[keepalive] %>
           <%- } -%>
-        <%- } -%>  
+        <%- } -%>
     <%- } -%>
     <%- if $id != undef { -%>
       id: <%= $id %>

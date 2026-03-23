@@ -178,11 +178,11 @@
     <%- if $openvswitch != undef { -%>
       openvswitch:
         <%- if $openvswitch[external_ids] != undef { -%>
-        external-ids: 
+        external-ids:
 <%= $openvswitch[external_ids] %>
         <%- } -%>
         <%- if $openvswitch[other_config] != undef { -%>
-        other-config: 
+        other-config:
 <%= $openvswitch[other_config] %>
         <%- } -%>
         <%- if $openvswitch[lacp] != undef { -%>
@@ -327,10 +327,10 @@
         - <%= $add %>:
             <%- if $option['lifetime'] != undef { -%>
             lifetime: <%= $option['lifetime'] %>
-            <%- } -%> 
+            <%- } -%>
             <%- if $option['label'] != undef { -%>
             label: <%= $option['label'] %>
-            <%- } -%>          
+            <%- } -%>
           <%- } -%>
         <%- } else { -%>
         - <%= $address %>
@@ -352,7 +352,10 @@
     <%- if $nameservers != undef { -%>
       nameservers:
       <%- if $nameservers[search] != undef { -%>
-        search: <%= $nameservers[search] %>
+        search:
+      <%- $nameservers[search].each |$search| { -%>
+          - <%= $search %>
+      <%- } -%>
       <%- } -%>
       <%- if $nameservers[addresses] != undef { -%>
         addresses:
