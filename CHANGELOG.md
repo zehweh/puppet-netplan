@@ -1,5 +1,22 @@
 # Changelog
 
+## Release 2.1.0
+
+#### Fixed
+- Fix missing `mark`/`type-of-service` in `routing-policy` across all device templates
+- Fix trailing space in `tunnels.pp` checksums enum
+- Fix incomplete `wakeonwlan` enum in `wifis.pp`
+- Fix `learn-packet-interval` type in `bonds.pp` (accept both Integer and Float)
+
+#### Added
+- Add spec tests for all device defines and the main class
+- Add GitHub Actions CI workflow for validation and unit tests
+
+#### Changed
+- Extract shared EPP template partials to reduce duplication across device templates
+- Drop Puppet 7 from CI (EOL since Nov 2023)
+- Update PDK templates
+
 ## Release 2.0.0
 
 #### Added
