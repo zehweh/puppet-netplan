@@ -1,0 +1,132 @@
+<%- |
+  Optional[Struct[{
+        Optional['name']             => String,
+        Optional['macaddress']       => Stdlib::MAC,
+        Optional['driver']           => String,
+  }]]                                                             $match = undef,
+  Optional[String]                                                $set_name = undef,
+  Optional[Boolean]                                               $wakeonlan = undef,
+  Optional[Boolean]                                               $emit_lldp = undef,
+  Optional[Boolean]                                               $receive_checksum_offload = undef,
+  Optional[Boolean]                                               $transmit_checksum_offload = undef,
+  Optional[Boolean]                                               $tcp_segmentation_offload = undef,
+  Optional[Boolean]                                               $tcp6_segmentation_offload = undef,
+  Optional[Boolean]                                               $generic_segmentation_offload = undef,
+  Optional[Boolean]                                               $generic_receive_offload = undef,
+  Optional[Boolean]                                               $large_receive_offload = undef,
+  Optional[Struct[{
+        Optional['external_ids']     => String,
+        Optional['other_config']     => String,
+        Optional['lacp']             => Enum['active', 'passive', 'off'],
+        Optional['fail_mode']        => Enum['secure', 'standalone', 'off'],
+        Optional['mcast_snooping']   => Boolean,
+        Optional['protocols']        => Array[String],
+        Optional['rstp']             => Boolean,
+        Optional['controller']       => Struct[{
+            Optional['addresses']           => Array[String],
+            Optional['connection_mode']     => Enum['in-band', 'out-of-band'],
+        }],
+        Optional['ports']            => Array[Array[String]],
+        Optional['ssl']              => Struct[{
+            Optional['ca_cert']             => String,
+            Optional['certificate']         => String,
+            Optional['private_key']         => String,
+        }],
+  }]]                                                             $openvswitch = undef,
+
+| -%>
+    <%- if $match != undef { -%>
+      match:
+      <%- if $match[name] != undef { -%>
+        name: <%= $match[name] %>
+      <%- } -%>
+      <%- if $match[macaddress] != undef { -%>
+        macaddress: <%= $match[macaddress] %>
+      <%- } -%>
+      <%- if $match[driver] != undef { -%>
+        driver: <%= $match[driver] %>
+      <%- } -%>
+    <%- } -%>
+    <%- if $set_name != undef { -%>
+      set-name: <%= $set_name %>
+    <%- } -%>
+    <%- if $wakeonlan != undef { -%>
+      wakeonlan: <%= $wakeonlan %>
+    <%- } -%>
+    <%- if $emit_lldp != undef { -%>
+      emit-lldp: <%= $emit_lldp %>
+    <%- } -%>
+    <%- if $receive_checksum_offload != undef { -%>
+      receive-checksum-offload: <%= $receive_checksum_offload %>
+    <%- } -%>
+    <%- if $transmit_checksum_offload != undef { -%>
+      transmit-checksum-offload: <%= $transmit_checksum_offload %>
+    <%- } -%>
+    <%- if $tcp_segmentation_offload != undef { -%>
+      tcp-segmentation-offload: <%= $tcp_segmentation_offload %>
+    <%- } -%>
+    <%- if $tcp6_segmentation_offload != undef { -%>
+      tcp6-segmentation-offload: <%= $tcp6_segmentation_offload %>
+    <%- } -%>
+    <%- if $generic_segmentation_offload != undef { -%>
+      generic-segmentation-offload: <%= $generic_segmentation_offload %>
+    <%- } -%>
+    <%- if $generic_receive_offload != undef { -%>
+      generic-receive-offload: <%= $generic_receive_offload %>
+    <%- } -%>
+    <%- if $large_receive_offload != undef { -%>
+      large-receive-offload: <%= $large_receive_offload %>
+    <%- } -%>
+    <%- if $openvswitch != undef { -%>
+      openvswitch:
+        <%- if $openvswitch[external_ids] != undef { -%>
+        external-ids:
+<%= $openvswitch[external_ids] %>
+        <%- } -%>
+        <%- if $openvswitch[other_config] != undef { -%>
+        other-config:
+<%= $openvswitch[other_config] %>
+        <%- } -%>
+        <%- if $openvswitch[lacp] != undef { -%>
+        lacp: <%= $openvswitch[lacp] %>
+        <%- } -%>
+        <%- if $openvswitch[fail_mode] != undef { -%>
+        fail-mode: <%= $openvswitch[fail_mode] %>
+        <%- } -%>
+        <%- if $openvswitch[mcast_snooping] != undef { -%>
+        mcast-snooping: <%= $openvswitch[mcast_snooping] %>
+        <%- } -%>
+        <%- if $openvswitch[protocols] != undef { -%>
+        protocols: <%= $openvswitch[protocols] %>
+        <%- } -%>
+        <%- if $openvswitch[rstp] != undef { -%>
+        rstp: <%= $openvswitch[rstp] %>
+        <%- } -%>
+        <%- if $openvswitch[controller] { -%>
+        controller:
+          <%- if $openvswitch[controller][addresses] != undef { -%>
+          addresses:
+        <%- $openvswitch[controller][addresses].each |$address| { -%>
+            - "<%= $address %>"
+        <%- } -%>
+          <%- } -%>
+          <%- if $openvswitch[controller][connection_mode] != undef { -%>
+          connection-mode: <%= $openvswitch[controller][connection_mode] %>
+          <%- } -%>
+        <%- } -%>
+        <%- if $openvswitch[ports] != undef { -%>
+        ports: <%= $openvswitch[ports] %>
+        <%- } -%>
+        <%- if $openvswitch[ssl] != undef { -%>
+        ssl:
+          <%- if $openvswitch[ssl][ca_cert] != undef { -%>
+          ca-cert: <%= $openvswitch[ssl][ca_cert] %>
+          <%- } -%>
+          <%- if $openvswitch[ssl][certificate] != undef { -%>
+          certificate: <%= $openvswitch[ssl][certificate] %>
+          <%- } -%>
+          <%- if $openvswitch[ssl][private_key] != undef { -%>
+          private-key: <%= $openvswitch[ssl][private_key] %>
+          <%- } -%>
+        <%- } -%>
+    <%- } -%>
