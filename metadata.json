@@ -42,7 +42,7 @@
     }
   ],
   "description": "Netplan Module for Ubuntu > 18.04.",
-  "pdk-version": "2.7.1",
-  "template-url": "pdk-default#2.3.0",
-  "template-ref": "tags/2.3.0-0-g8aaceff"
+  "pdk-version": "3.4.0",
+  "template-url": "https://github.com/puppetlabs/pdk-templates.git#main",
+  "template-ref": "tags/3.6.1.1-0-g5fe78cc"
 }

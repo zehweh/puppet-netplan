@@ -436,6 +436,12 @@
           <%- if $policy[priority] != undef { -%>
           priority: <%= $policy[priority] %>
           <%- } -%>
+          <%- if $policy[mark] != undef { -%>
+          mark: <%= $policy[mark] %>
+          <%- } -%>
+          <%- if $policy[type_of_service] != undef { -%>
+          type-of-service: <%= $policy[type_of_service] %>
+          <%- } -%>
       <%- } -%>
     <%- } -%>
     <%- if $neigh_suppress != undef { -%>

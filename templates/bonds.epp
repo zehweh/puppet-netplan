@@ -104,7 +104,7 @@
     Optional['packets_per_member']      => Integer,
     Optional['primary_reselect_policy'] => Enum['always', 'better', 'failure'],
     Optional['resend_igmp']             => Integer,
-    Optional['learn_packet_interval']   => String,
+    Optional['learn_packet_interval']   => Variant[Integer, Float],
     Optional['primary']                 => String,
   }]]                                                             $parameters = undef,
 
@@ -307,6 +307,12 @@
           <%- } -%>
           <%- if $policy[priority] != undef { -%>
           priority: <%= $policy[priority] %>
+          <%- } -%>
+          <%- if $policy[mark] != undef { -%>
+          mark: <%= $policy[mark] %>
+          <%- } -%>
+          <%- if $policy[type_of_service] != undef { -%>
+          type-of-service: <%= $policy[type_of_service] %>
           <%- } -%>
       <%- } -%>
     <%- } -%>
