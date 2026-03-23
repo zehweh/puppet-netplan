@@ -88,215 +88,34 @@
 
 | -%>
     <%= $name %>:
-    <%# Properties for all device types -%>
-    <%- if $renderer != undef { -%>
-      renderer: <%= $renderer %>
-    <%- } -%>
-    <%- if $dhcp4 != undef { -%>
-      dhcp4: <%= $dhcp4 %>
-    <%- } -%>
-    <%- if $dhcp6 != undef { -%>
-      dhcp6: <%= $dhcp6 %>
-    <%- } -%>
-    <%- if $ipv6_mtu != undef { -%>
-      ipv6-mtu: <%= $ipv6_mtu %>
-    <%- } -%>
-    <%- if $ipv6_privacy != undef { -%>
-      ipv6-privacy: <%= $ipv6_privacy %>
-    <%- } -%>
-    <%- if $link_local != undef { -%>
-      link-local: <%= $link_local %>
-    <%- } -%>
-    <%- if $ignore_carrier != undef { -%>
-      ignore-carrier: <%= $ignore_carrier %>
-    <%- } -%>
-    <%- if $critical != undef { -%>
-      critical: <%= $critical %>
-    <%- } -%>
-    <%- if $dhcp_identifier != undef { -%>
-      dhcp-identifier: <%= $dhcp_identifier %>
-    <%- } -%>
-    <%- if $dhcp4_overrides != undef { -%>
-      dhcp4-overrides:
-        <%- if $dhcp4_overrides[use_dns] != undef { -%>
-        use-dns: <%= $dhcp4_overrides[use_dns] %>
-        <%- } -%>
-        <%- if $dhcp4_overrides[use_ntp] != undef { -%>
-        use-ntp: <%= $dhcp4_overrides[use_ntp] %>
-        <%- } -%>
-        <%- if $dhcp4_overrides[send_hostname] != undef { -%>
-        send-hostname: <%= $dhcp4_overrides[send_hostname] %>
-        <%- } -%>
-        <%- if $dhcp4_overrides[use_hostname] != undef { -%>
-        use-hostname: <%= $dhcp4_overrides[use_hostname] %>
-        <%- } -%>
-        <%- if $dhcp4_overrides[use_mtu] != undef { -%>
-        use-mtu: <%= $dhcp4_overrides[use_mtu] %>
-        <%- } -%>
-        <%- if $dhcp4_overrides[hostname] != undef { -%>
-        hostname: <%= $dhcp4_overrides[hostname] %>
-        <%- } -%>
-        <%- if $dhcp4_overrides[use_routes] != undef { -%>
-        use-routes: <%= $dhcp4_overrides[use_routes] %>
-        <%- } -%>
-        <%- if $dhcp4_overrides[route_metric] != undef { -%>
-        route-metric: <%= $dhcp4_overrides[route_metric] %>
-        <%- } -%>
-        <%- if $dhcp4_overrides[use_domains] != undef { -%>
-        use-domains: <%= $dhcp4_overrides[use_domains] %>
-        <%- } -%>
-    <%- } -%>
-    <%- if $dhcp6_overrides != undef { -%>
-      dhcp6-overrides:
-        <%- if $dhcp6_overrides[use_dns] != undef { -%>
-        use-dns: <%= $dhcp6_overrides[use_dns] %>
-        <%- } -%>
-        <%- if $dhcp6_overrides[use_ntp] != undef { -%>
-        use-ntp: <%= $dhcp6_overrides[use_ntp] %>
-        <%- } -%>
-        <%- if $dhcp6_overrides[send_hostname] != undef { -%>
-        send-hostname: <%= $dhcp6_overrides[send_hostname] %>
-        <%- } -%>
-        <%- if $dhcp6_overrides[use_hostname] != undef { -%>
-        use-hostname: <%= $dhcp6_overrides[use_hostname] %>
-        <%- } -%>
-        <%- if $dhcp6_overrides[use_mtu] != undef { -%>
-        use-mtu: <%= $dhcp6_overrides[use_mtu] %>
-        <%- } -%>
-        <%- if $dhcp6_overrides[hostname] != undef { -%>
-        hostname: <%= $dhcp6_overrides[hostname] %>
-        <%- } -%>
-        <%- if $dhcp6_overrides[use_routes] != undef { -%>
-        use-routes: <%= $dhcp6_overrides[use_routes] %>
-        <%- } -%>
-        <%- if $dhcp6_overrides[route_metric] != undef { -%>
-        route-metric: <%= $dhcp6_overrides[route_metric] %>
-        <%- } -%>
-        <%- if $dhcp6_overrides[use_domains] != undef { -%>
-        use-domains: <%= $dhcp6_overrides[use_domains] %>
-        <%- } -%>
-    <%- } -%>
-    <%- if $accept_ra != undef { -%>
-      accept-ra: <%= $accept_ra %>
-    <%- } -%>
-    <%- if $addresses != undef { -%>
-      addresses:
-      <%- $addresses.each | $address | { -%>
-        <%- if $address.is_a(Hash) { -%>
-          <%- $address.each | $add, $option | { -%>
-        - <%= $add %>:
-            <%- if $option['lifetime'] != undef { -%>
-            lifetime: <%= $option['lifetime'] %>
-            <%- } -%> 
-            <%- if $option['label'] != undef { -%>
-            label: <%= $option['label'] %>
-            <%- } -%>          
-          <%- } -%>
-        <%- } else { -%>
-        - <%= $address %>
-        <%- } -%>
-      <%- } -%>
-    <%- } -%>
-    <%- if $ipv6_address_generation != undef { -%>
-      ipv6-address-generation: <%= $ipv6_address_generation %>
-    <%- } -%>
-    <%- if $ipv6_address_token != undef { -%>
-      ipv6-address-token: <%= $ipv6_address_token %>
-    <%- } -%>
-    <%- if $gateway4 != undef { -%>
-      gateway4: <%= $gateway4 %>
-    <%- } -%>
-    <%- if $gateway6 != undef { -%>
-      gateway6: <%= $gateway6 %>
-    <%- } -%>
-    <%- if $nameservers != undef { -%>
-      nameservers:
-      <%- if $nameservers[search] != undef { -%>
-        search: <%= $nameservers[search] %>
-      <%- } -%>
-      <%- if $nameservers[addresses] != undef { -%>
-        addresses:
-      <%- $nameservers[addresses].each |$address| { -%>
-          - <%= $address %>
-      <%- } -%>
-      <%- } -%>
-    <%- } -%>
-    <%- if $macaddress != undef { -%>
-      macaddress: <%= $macaddress %>
-    <%- } -%>
-    <%- if $mtu != undef { -%>
-      mtu: <%= $mtu %>
-    <%- } -%>
-    <%- if $optional != undef { -%>
-      optional: <%= $optional %>
-    <%- } -%>
-    <%- if $optional_addresses != undef { -%>
-      optional-addresses:
-      <%- $optional_addresses.each |$optional_address| { -%>
-        - <%= $optional_address %>
-      <%- } -%>
-    <%- } -%>
-    <%- if $activation_mode != undef { -%>
-      activation-mode: <%= $activation_mode %>
-    <%- } -%>
-    <%- if $routes != undef { -%>
-      routes:
-      <%- $routes.each |$route| { -%>
-        - to: <%= $route[to] %>
-          <%- if $route[via] != undef { -%>
-          via: <%= $route[via] %>
-          <%- } -%>
-          <%- if $route[from] != undef { -%>
-          from: <%= $route[from] %>
-          <%- } -%>
-          <%- if $route[on_link] != undef { -%>
-          on-link: <%= $route[on_link] %>
-          <%- } -%>
-          <%- if $route[metric] != undef { -%>
-          metric: <%= $route[metric] %>
-          <%- } -%>
-          <%- if $route['type'] != undef { -%>
-          type: <%= $route['type'] %>
-          <%- } -%>
-          <%- if $route[scope] != undef { -%>
-          scope: <%= $route[scope] %>
-          <%- } -%>
-          <%- if $route[table] != undef { -%>
-          table: <%= $route[table] %>
-          <%- } -%>
-          <%- if $route[mtu] != undef { -%>
-          mtu: <%= $route[mtu] %>
-          <%- } -%>
-          <%- if $route[congestion_window] != undef { -%>
-          congestion-window: <%= $route[congestion_window] %>
-          <%- } -%>
-          <%- if $route[advertised_receive_window] != undef { -%>
-          advertised-receive-window: <%= $route[advertised_receive_window] %>
-          <%- } -%>
-      <%- } -%>
-    <%- } -%>
-    <%- if $routing_policy != undef { -%>
-      routing-policy:
-      <%- $routing_policy.each |$policy| { -%>
-        - to: <%= $policy[to] %>
-          from: <%= $policy[from] %>
-          <%- if $policy[table] != undef { -%>
-          table: <%= $policy[table] %>
-          <%- } -%>
-          <%- if $policy[priority] != undef { -%>
-          priority: <%= $policy[priority] %>
-          <%- } -%>
-          <%- if $policy[mark] != undef { -%>
-          mark: <%= $policy[mark] %>
-          <%- } -%>
-          <%- if $policy[type_of_service] != undef { -%>
-          type-of-service: <%= $policy[type_of_service] %>
-          <%- } -%>
-      <%- } -%>
-    <%- } -%>
-    <%- if $neigh_suppress != undef { -%>
-      neigh-suppress: <%= $neigh_suppress %>
-    <%- } -%>
+<%= epp('netplan/_common_properties.epp', {
+    'renderer'                => $renderer,
+    'dhcp4'                   => $dhcp4,
+    'dhcp6'                   => $dhcp6,
+    'ipv6_mtu'                => $ipv6_mtu,
+    'ipv6_privacy'            => $ipv6_privacy,
+    'link_local'              => $link_local,
+    'ignore_carrier'          => $ignore_carrier,
+    'critical'                => $critical,
+    'dhcp_identifier'         => $dhcp_identifier,
+    'dhcp4_overrides'         => $dhcp4_overrides,
+    'dhcp6_overrides'         => $dhcp6_overrides,
+    'accept_ra'               => $accept_ra,
+    'addresses'               => $addresses,
+    'ipv6_address_generation' => $ipv6_address_generation,
+    'ipv6_address_token'      => $ipv6_address_token,
+    'gateway4'                => $gateway4,
+    'gateway6'                => $gateway6,
+    'nameservers'             => $nameservers,
+    'macaddress'              => $macaddress,
+    'mtu'                     => $mtu,
+    'optional'                => $optional,
+    'optional_addresses'      => $optional_addresses,
+    'activation_mode'         => $activation_mode,
+    'routes'                  => $routes,
+    'routing_policy'          => $routing_policy,
+    'neigh_suppress'          => $neigh_suppress,
+}) -%>
     <%# Properties for device type vlans -%>
     <%- if $id != undef { -%>
       id: <%= $id %>
