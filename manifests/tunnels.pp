@@ -360,7 +360,7 @@ define netplan::tunnels (
   Optional[Enum['l2-miss', 'l3-miss']]                            $notifications = undef,
   Optional[Boolean]                                               $short_circuit = undef,
   Optional[Enum['udp', 'zero-udp6-tx', 'zero-udp6-rx',
-                'remote-tx', 'remote-rx ']]                       $checksums = undef,
+                'remote-tx', 'remote-rx']]                        $checksums = undef,
   Optional[Enum['group-policy', 'generic-protocol']]              $extensions = undef,
   Optional[Tuple[Stdlib::Port, Stdlib::Port]]                     $port_range = undef,
   Optional[Integer[1,1048575]]                                    $flow_label = undef,

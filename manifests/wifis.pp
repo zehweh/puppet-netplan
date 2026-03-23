@@ -413,7 +413,10 @@ define netplan::wifis (
       Optional['phase2_auth']         => String,
     }]
   }]]]                                                            $access_points = undef,
-  Optional[Array[Enum['any', 'disconnect']]]                      $wakeonwlan = undef,
+  Optional[Array[Enum['any', 'disconnect', 'magic_pkt',
+    'gtk_rekey_failure', 'eap_identity_req',
+    'four_way_handshake', 'rfkill_release',
+    'tcp', 'default']]]                                           $wakeonwlan = undef,
   Optional[String]                                                $regulatory_domain = undef,
 
   ){

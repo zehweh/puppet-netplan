@@ -327,7 +327,7 @@ define netplan::bonds (
     Optional['packets_per_member']      => Integer,
     Optional['primary_reselect_policy'] => Enum['always', 'better', 'failure'],
     Optional['resend_igmp']             => Integer,
-    Optional['learn_packet_interval']   => String,
+    Optional['learn_packet_interval']   => Variant[Integer, Float],
     Optional['primary']                 => String,
   }]]                                                             $parameters = undef,
 
