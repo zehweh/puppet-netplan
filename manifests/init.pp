@@ -32,6 +32,13 @@
 #  whether or not to apply the changes
 # @param purge_config
 #  whether or not to purge the netplan directory
+# @param package_manage
+#  whether to manage the netplan package, default value: true
+# @param package_name
+#  specifies the name of the netplan package to manage, default value: 'netplan.io'
+# @param package_ensure
+#  specifies the state of the netplan package, e.g. 'installed', 'latest' or a specific version.
+#  default value: 'installed'
 #
 class netplan (
   Optional[Hash]       $ethernets = undef,
@@ -49,7 +56,17 @@ class netplan (
   Integer              $version = 2,
   Boolean              $netplan_apply = true,
   Boolean              $purge_config = true,
+  Boolean              $package_manage = true,
+  String               $package_name = 'netplan.io',
+  String               $package_ensure = 'installed',
   ){
+
+  if $package_manage {
+    package { $package_name:
+      ensure => $package_ensure,
+      before => Exec['netplan_apply'],
+    }
+  }
 
   file { '/etc/netplan':
     ensure => directory,
