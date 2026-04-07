@@ -239,9 +239,6 @@
     <%- if $extensions != undef { -%>
       extensions: <%= $extensions %>
     <%- } -%>
-    <%- if $port != undef { -%>
-      port: <%= $port %>
-    <%- } -%>
     <%- if $port_range != undef { -%>
       port-range: <%= $port_range %>
     <%- } -%>
