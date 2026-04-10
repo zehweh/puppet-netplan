@@ -188,6 +188,29 @@
 #    finer control on the network topology so that the fastest paths are available whenever possible.
 #  stp: Define whether the bridge should use Spanning Tree Protocol. The default value is "true", which means that
 #    Spanning Tree should be used.
+# @param openvswitch
+#  This provides additional configuration for the openvswitch network device. If Open vSwitch is not 
+#  available on the system, netplan treats the presence of openvswitch configuration as an error.
+#  external_ids: Passed-through directly to Open vSwitch
+#  other_config: Passed-through directly to Open vSwitch
+#  lacp: Valid for bond interfaces. Accepts active, passive or off (the default).
+#  fail_mode: Valid for bridge interfaces. Accepts secure or standalone (the default).
+#  mcast_snooping: Valid for bridge interfaces. False by default.
+#  protocols: Valid for bridge interfaces or the network section. List of protocols to be used when negotiating 
+#    a connection with the controller. Accepts OpenFlow10, OpenFlow11, OpenFlow12, OpenFlow13, OpenFlow14, 
+#    and OpenFlow15.
+#  rstp: Valid for bridge interfaces. False by default.
+#  controller: Valid for bridge interfaces. Specify an external OpenFlow controller.
+#    addresses: Set the list of addresses to use for the controller targets. The syntax of these addresses 
+#      is as defined in ovs-vsctl(8). Example: addresses: [tcp:127.0.0.1:6653, "ssl:[fe80::1234%eth0]:6653"]
+#    connection_mode: Set the connection mode for the controller. Supported options are in-band and 
+#      out-of-band. The default is in-band.
+#  ports: Open vSwitch patch ports. Each port is declared as a pair of names which can be referenced as 
+#    interfaces in dependent virtual devices (bonds, bridges).
+#  ssl: Valid for global openvswitch settings. Options for configuring SSL server endpoint for the switch.
+#    ca_cert: Path to a file containing the CA certificate to be used.
+#    certificate: Path to a file containing the server certificate.
+#    private_key: Path to a file containing the private key for the server.
 #
 define netplan::bridges (
 
@@ -284,9 +307,27 @@ define netplan::bridges (
     Optional['path_cost']        => Integer,
     Optional['stp']              => Boolean,
   }]]                                                             $parameters = undef,
+  Optional[Struct[{
+        Optional['external_ids']     => String,
+        Optional['other_config']     => String,
+        Optional['lacp']             => Enum['active', 'passive', 'off'],
+        Optional['fail_mode']        => Enum['secure', 'standalone', 'off'],
+        Optional['mcast_snooping']   => Boolean,
+        Optional['protocols']        => Array[String],
+        Optional['rstp']             => Boolean,
+        Optional['controller']       => Struct[{
+            Optional['addresses']           => Array[String],
+            Optional['connection_mode']     => Enum['in-band', 'out-of-band'],
+        }],
+        Optional['ports']            => Array[Array[String]],
+        Optional['ssl']              => Struct[{
+            Optional['ca_cert']             => String,
+            Optional['certificate']         => String,
+            Optional['private_key']         => String,
+        }],
+  }]]                                                             $openvswitch = undef,
 
-  ){
-
+) {
   $_dhcp4 = $dhcp4 ? {
     true    => true,
     'yes'   => true,
