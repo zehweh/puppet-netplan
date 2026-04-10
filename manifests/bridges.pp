@@ -381,6 +381,7 @@ define netplan::bridges (
       'neigh_suppress'                 => $neigh_suppress,
       'interfaces'                     => $interfaces,
       'parameters'                     => $parameters,
+      'openvswitch'                    => $openvswitch,
   })
 
   concat::fragment { $name:
